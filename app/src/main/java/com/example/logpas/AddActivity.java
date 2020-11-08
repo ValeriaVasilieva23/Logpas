@@ -203,3 +203,4 @@ public void onChanged(View v) {}
 
     }
 }
+//Проверка связи
