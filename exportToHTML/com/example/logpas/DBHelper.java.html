@@ -1,0 +1,89 @@
+<html>
+<head>
+<title>DBHelper.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #808080;}
+.s3 { color: #6897bb;}
+.s4 { color: #6a8759;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+DBHelper.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com.example.logpas</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">android.content.Context</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.database.sqlite.SQLiteDatabase</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.database.sqlite.SQLiteOpenHelper</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.os.Build</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.os.Parcel</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.os.Parcelable</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">androidx.annotation.RequiresApi</span><span class="s0">;</span>
+
+
+<span class="s0">public class </span><span class="s1">DBHelper </span><span class="s0">extends </span><span class="s1">SQLiteOpenHelper </span><span class="s2">/*implements Parcelable*/ </span><span class="s1">{</span>
+   <span class="s2">/* public static final Creator &lt;DBHelper&gt; CREATOR = new DBHelperCreator();*/</span>
+    <span class="s0">public static int </span><span class="s1">DATABASE_VERSION=</span><span class="s3">1</span><span class="s0">;</span>
+    <span class="s0">public static </span><span class="s1">String DATABASE_NAME=</span><span class="s4">&quot;tasksDb&quot;</span><span class="s0">;</span>
+    <span class="s0">public static final </span><span class="s1">String TABLE_TASKS2=</span><span class="s4">&quot;tasks&quot;</span><span class="s0">;</span>
+
+    <span class="s0">public static final </span><span class="s1">String ID=</span><span class="s4">&quot;id&quot;</span><span class="s0">;</span>
+    <span class="s0">public static final </span><span class="s1">String TIME=</span><span class="s4">&quot;time&quot;</span><span class="s0">;</span>
+    <span class="s0">public static final </span><span class="s1">String DATE=</span><span class="s4">&quot;date&quot;</span><span class="s0">;</span>
+    <span class="s0">public static final </span><span class="s1">String TASK=</span><span class="s4">&quot;task&quot;</span><span class="s0">;</span>
+    <span class="s0">public static final </span><span class="s1">String STATUS=</span><span class="s4">&quot;status&quot;</span><span class="s0">;</span>
+
+    <span class="s0">public </span><span class="s1">DBHelper( Context context) {</span>
+
+        <span class="s0">super</span><span class="s1">(context</span><span class="s0">, </span><span class="s1">DATABASE_NAME</span><span class="s0">, null, </span><span class="s1">DATABASE_VERSION)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+   <span class="s2">/* public static class DBHelperCreator implements Creator&lt;DBHelper&gt; { 
+        @Override 
+        public DBHelper createFromParcel(Parcel source) { 
+            DATABASE_VERSION=source.readInt(); 
+            DATABASE_NAME=source.readString(); 
+ 
+            return new DBHelper(DBHelper.this); 
+        } 
+ 
+        @Override 
+        public DBHelper[] newArray(int size) { 
+            return new DBHelper[size]; 
+        } 
+    };*/</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">onCreate(SQLiteDatabase sqLiteDatabase) {</span>
+        <span class="s1">sqLiteDatabase.execSQL(</span><span class="s4">&quot;create table &quot;</span><span class="s1">+TABLE_TASKS2+</span><span class="s4">&quot;(&quot; </span><span class="s1">+ID + </span><span class="s4">&quot; INTEGER PRIMARY KEY AUTOINCREMENT,&quot;</span><span class="s1">+TASK+</span><span class="s4">&quot;,&quot;</span><span class="s1">+DATE+</span><span class="s4">&quot;,&quot;</span><span class="s1">+STATUS+</span><span class="s4">&quot;,&quot;</span><span class="s1">+TIME+</span><span class="s4">&quot;)&quot;</span><span class="s1">)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">onUpgrade(SQLiteDatabase sqLiteDatabase</span><span class="s0">, int </span><span class="s1">i</span><span class="s0">, int </span><span class="s1">i1) {</span>
+
+        <span class="s1">sqLiteDatabase.execSQL(</span><span class="s4">&quot;drop table if exists &quot;</span><span class="s1">+TABLE_TASKS2)</span><span class="s0">;</span>
+        <span class="s1">onCreate(sqLiteDatabase)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+   <span class="s2">/* @Override 
+    public int describeContents() { 
+        return 0; 
+    }*/</span>
+
+   <span class="s2">/* @RequiresApi(api = Build.VERSION_CODES.M) 
+    @Override 
+    public void writeToParcel(Parcel parcel, int i) { 
+        parcel.writeString(DATABASE_NAME); 
+        parcel.writeInt(DATABASE_VERSION); 
+ 
+    }*/</span>
+<span class="s1">}</span>
+</pre>
+</body>
+</html>

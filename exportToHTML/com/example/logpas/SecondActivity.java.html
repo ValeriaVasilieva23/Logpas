@@ -1,0 +1,181 @@
+<html>
+<head>
+<title>SecondActivity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6a8759;}
+.s3 { color: #808080;}
+.s4 { color: #6897bb;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+SecondActivity.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com.example.logpas</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.annotation.RequiresApi</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.appcompat.app.AppCompatActivity</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.app.DatePickerDialog</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.app.TimePickerDialog</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.content.ContentValues</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.content.Intent</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.database.Cursor</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.database.sqlite.SQLiteDatabase</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.icu.util.Calendar</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.os.Build</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.os.Bundle</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.util.Log</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.View</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.Button</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.CheckedTextView</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.DatePicker</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.EditText</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.TimePicker</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">java.sql.Time</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.text.SimpleDateFormat</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.util.ArrayList</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.util.Date</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.util.SimpleTimeZone</span><span class="s0">;</span>
+
+<span class="s0">public class </span><span class="s1">SecondActivity </span><span class="s0">extends </span><span class="s1">AppCompatActivity </span><span class="s0">implements</span>
+        <span class="s1">View.OnClickListener {</span>
+    <span class="s1">Button saveTask</span><span class="s0">;</span>
+    <span class="s1">EditText edit_message</span><span class="s0">;</span>
+    <span class="s1">Button btnDatePicker</span><span class="s0">, </span><span class="s1">btnTimePicker</span><span class="s0">;</span>
+    <span class="s1">EditText txtDate</span><span class="s0">, </span><span class="s1">txtTime</span><span class="s0">;</span>
+    <span class="s0">private int </span><span class="s1">mYear</span><span class="s0">, </span><span class="s1">mMonth</span><span class="s0">, </span><span class="s1">mDay</span><span class="s0">, </span><span class="s1">mHour</span><span class="s0">, </span><span class="s1">mMinute</span><span class="s0">;</span>
+    <span class="s0">public </span><span class="s1">String dayofMonth1</span><span class="s0">;</span>
+    <span class="s0">public int </span><span class="s1">i</span><span class="s0">;</span>
+    <span class="s0">public int </span><span class="s1">k</span><span class="s0">;</span>
+    <span class="s0">public </span><span class="s1">String monthOfYear1</span><span class="s0">;</span>
+    <span class="s1">@RequiresApi(api = Build.VERSION_CODES.N)</span>
+    <span class="s1">@Override</span>
+    <span class="s0">protected void </span><span class="s1">onCreate(Bundle savedInstanceState) {</span>
+        <span class="s1">Calendar c = Calendar.getInstance()</span><span class="s0">;</span>
+        <span class="s1">System.out.println(mHour = c.get(Calendar.HOUR_OF_DAY))</span><span class="s0">;</span>
+        <span class="s1">System.out.println(mMinute = c.get(Calendar.MINUTE))</span><span class="s0">;</span>
+        <span class="s0">super</span><span class="s1">.onCreate(savedInstanceState)</span><span class="s0">;</span>
+        <span class="s1">setContentView(R.layout.activity_second)</span><span class="s0">;</span>
+
+
+        <span class="s1">btnDatePicker = (Button) findViewById(R.id.btn_date)</span><span class="s0">;</span>
+        <span class="s1">btnTimePicker = (Button) findViewById(R.id.btn_time)</span><span class="s0">;</span>
+        <span class="s1">txtDate = (EditText) findViewById(R.id.in_date)</span><span class="s0">;</span>
+        <span class="s1">txtTime = (EditText) findViewById(R.id.in_time)</span><span class="s0">;</span>
+        <span class="s1">edit_message=(EditText) findViewById(R.id.edit_message)</span><span class="s0">;</span>
+
+        <span class="s1">btnDatePicker.setOnClickListener(</span><span class="s0">this</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">btnTimePicker.setOnClickListener(</span><span class="s0">this</span><span class="s1">)</span><span class="s0">;</span>
+
+    <span class="s1">}</span>
+    <span class="s0">public void </span><span class="s1">saveTask(View view) {</span>
+        <span class="s1">String task = edit_message.getText().toString()</span><span class="s0">;</span>
+        <span class="s1">String date = txtDate.getText().toString()</span><span class="s0">;</span>
+        <span class="s1">String time = txtTime.getText().toString()</span><span class="s0">;</span>
+        <span class="s1">ContentValues contentValues = </span><span class="s0">new </span><span class="s1">ContentValues()</span><span class="s0">;</span>
+        <span class="s1">contentValues.put(DBHelper.DATE</span><span class="s0">, </span><span class="s1">date)</span><span class="s0">;</span>
+        <span class="s1">contentValues.put(DBHelper.TASK</span><span class="s0">, </span><span class="s1">task)</span><span class="s0">;</span>
+        <span class="s1">contentValues.put(DBHelper.TIME</span><span class="s0">, </span><span class="s1">time)</span><span class="s0">;</span>
+        <span class="s1">DBHelper dbHelper= </span><span class="s0">new </span><span class="s1">DBHelper(</span><span class="s0">this</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase()</span><span class="s0">;</span>
+        <span class="s1">sqLiteDatabase.insert(DBHelper.TABLE_TASKS2</span><span class="s0">, null, </span><span class="s1">contentValues)</span><span class="s0">;</span>
+        <span class="s1">Cursor cursor = sqLiteDatabase.query(DBHelper.TABLE_TASKS2</span><span class="s0">, null,null, null,null, null, </span><span class="s2">&quot; ID desc&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">System.out.println(</span><span class="s2">&quot;ЩЩЩЩЩЩЩЩЩЩЖЩЛДОТДРИЛРПМПОСААПСОРИТДЛЬЖДБЖЬДРИ&quot; </span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">cursor.moveToLast()</span><span class="s0">;</span>
+            <span class="s0">int </span><span class="s1">idIndex = cursor.getColumnIndex(DBHelper.ID)</span><span class="s0">;</span>
+            <span class="s0">int </span><span class="s1">taskIndex = cursor.getColumnIndex(DBHelper.TASK)</span><span class="s0">;</span>
+            <span class="s0">int </span><span class="s1">dateIndex = cursor.getColumnIndex(DBHelper.DATE)</span><span class="s0">;</span>
+            <span class="s0">int </span><span class="s1">timeIndex = cursor.getColumnIndex(DBHelper.TIME)</span><span class="s0">;</span>
+            <span class="s0">int </span><span class="s1">statusIndex = cursor.getColumnIndex(DBHelper.STATUS)</span><span class="s0">;</span>
+            <span class="s1">System.out.println(</span><span class="s2">&quot;ЩЩЩЩЩЩЩЩЩЩЖЩЛДОТДРИЛРПМПОСААПСОРИТДЛЬЖДБЖЬДРИ&quot; </span><span class="s1">+ idIndex)</span><span class="s0">;</span>
+            <span class="s1">System.out.println(taskIndex)</span><span class="s0">;</span>
+            <span class="s1">System.out.println(dateIndex)</span><span class="s0">;</span>
+            <span class="s1">System.out.println(timeIndex)</span><span class="s0">;</span>
+
+            <span class="s3">/* do {*/</span>
+            <span class="s1">Log.d(</span><span class="s2">&quot;mLog&quot;</span><span class="s0">, </span><span class="s2">&quot;id=&quot; </span><span class="s1">+ cursor.getInt(idIndex) + </span><span class="s2">&quot;,task=&quot; </span><span class="s1">+ cursor.getString(taskIndex) + </span><span class="s2">&quot;,date=&quot;</span>
+                    <span class="s1">+ cursor.getString(dateIndex) + </span><span class="s2">&quot;,time=&quot; </span><span class="s1">+ cursor.getString(timeIndex))</span><span class="s0">;</span>
+          <span class="s3">/*  } while (cursor.moveToNext()); 
+        }else Log.d(&quot;mLog&quot;,&quot;0 rows&quot;);*/</span>
+        <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(</span><span class="s0">this, </span><span class="s1">MainActivity.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">intent.putExtra(</span><span class="s2">&quot;stringToAdd&quot;</span><span class="s0">, </span><span class="s1">task+</span><span class="s2">&quot; &quot;</span><span class="s1">+date+</span><span class="s2">&quot; &quot; </span><span class="s1">+ time)</span><span class="s0">;</span>
+        <span class="s1">startActivity(intent)</span><span class="s0">;</span>
+        <span class="s1">cursor.close()</span><span class="s0">;</span>
+        <span class="s1">System.out.println(</span><span class="s2">&quot;привет&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">finish()</span><span class="s0">;</span>
+
+    <span class="s1">}</span>
+
+
+    <span class="s1">@RequiresApi(api = Build.VERSION_CODES.N)</span>
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+            <span class="s0">if </span><span class="s1">(v == btnDatePicker) {</span>
+
+                <span class="s0">final </span><span class="s1">Calendar c = Calendar.getInstance()</span><span class="s0">;</span>
+                <span class="s1">mYear = c.get(Calendar.YEAR)</span><span class="s0">;</span>
+                <span class="s1">mMonth = c.get(Calendar.MONTH)</span><span class="s0">;</span>
+                <span class="s1">mDay = c.get(Calendar.DAY_OF_MONTH)</span><span class="s0">;</span>
+
+                <span class="s1">DatePickerDialog datePickerDialog = </span><span class="s0">new </span><span class="s1">DatePickerDialog(</span><span class="s0">this,</span><span class="s3">// При создании окна его объекту передается обработчик выбора даты DatePickerDialog.OnDateSetListener, который изменяет дату на текстовом поле.</span>
+                        <span class="s0">new </span><span class="s1">DatePickerDialog.OnDateSetListener() {</span>
+
+                            <span class="s1">@Override</span>
+                            <span class="s0">public void </span><span class="s1">onDateSet(DatePicker view</span><span class="s0">, int </span><span class="s1">year</span><span class="s0">,</span>
+                                                  <span class="s0">int </span><span class="s1">monthOfYear</span><span class="s0">, int </span><span class="s1">dayOfMonth) {</span>
+                                <span class="s1">SimpleDateFormat dateFormatter = </span><span class="s0">new </span><span class="s1">SimpleDateFormat(</span><span class="s2">&quot;dd-MM-yyyy&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                                <span class="s0">int </span><span class="s1">year1=year-</span><span class="s4">1900</span><span class="s0">;</span>
+                                <span class="s1">Date d = </span><span class="s0">new </span><span class="s1">Date()</span><span class="s0">;</span>
+                               <span class="s1">d.setMonth(monthOfYear)</span><span class="s0">;</span>
+                               <span class="s1">d.setYear(year1)</span><span class="s0">;</span>
+                               <span class="s1">d.setDate(dayOfMonth)</span><span class="s0">;</span>
+                                <span class="s1">System.out.println(dayOfMonth)</span><span class="s0">;</span>
+                                <span class="s1">String strDate = dateFormatter.format(d)</span><span class="s0">;</span>
+                                <span class="s1">txtDate.setText(strDate)</span><span class="s0">;</span>
+                                <span class="s1">System.out.println(strDate)</span><span class="s0">;</span>
+
+                            <span class="s1">}</span>
+                        <span class="s1">}</span><span class="s0">, </span><span class="s1">mYear</span><span class="s0">, </span><span class="s1">mMonth</span><span class="s0">, </span><span class="s1">mDay)</span><span class="s0">;</span>
+
+
+
+
+
+                <span class="s1">datePickerDialog.show()</span><span class="s0">;</span>
+            <span class="s1">}</span>
+            <span class="s0">if </span><span class="s1">(v == btnTimePicker) {</span>
+
+                <span class="s0">final </span><span class="s1">Calendar c = Calendar.getInstance()</span><span class="s0">;</span>
+                <span class="s1">System.out.println(mHour = c.get(Calendar.HOUR_OF_DAY))</span><span class="s0">;</span>
+                <span class="s1">System.out.println(mMinute = c.get(Calendar.MINUTE))</span><span class="s0">;</span>
+
+                <span class="s3">// Launch Time Picker Dialog</span>
+                <span class="s1">TimePickerDialog timePickerDialog = </span><span class="s0">new </span><span class="s1">TimePickerDialog(</span><span class="s0">this,</span>
+                        <span class="s0">new </span><span class="s1">TimePickerDialog.OnTimeSetListener() {</span>
+
+                            <span class="s1">@Override</span>
+                            <span class="s0">public void </span><span class="s1">onTimeSet(TimePicker view</span><span class="s0">, int </span><span class="s1">hourOfDay</span><span class="s0">,</span>
+                                                  <span class="s0">int </span><span class="s1">minute) {</span>
+                                <span class="s1">SimpleDateFormat simpleDateFormat= </span><span class="s0">new </span><span class="s1">SimpleDateFormat(</span><span class="s2">&quot;hh:mm&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                                <span class="s1">Time t=</span><span class="s0">new </span><span class="s1">Time(hourOfDay</span><span class="s0">,</span><span class="s1">minute</span><span class="s0">,</span><span class="s4">0</span><span class="s1">)</span><span class="s0">;</span><span class="s3">//?</span>
+                                <span class="s1">String strDate1 = simpleDateFormat.format(t)</span><span class="s0">;</span>
+                                <span class="s1">txtTime.setText(strDate1)</span><span class="s0">;</span>
+
+                            <span class="s1">}</span>
+                        <span class="s1">}</span><span class="s0">, </span><span class="s1">mHour</span><span class="s0">, </span><span class="s1">mMinute</span><span class="s0">, false</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s0">int </span><span class="s1">l =</span><span class="s4">14</span><span class="s0">;</span>
+                <span class="s1">System.out.println(</span><span class="s2">&quot;0&quot;</span><span class="s1">+l)</span><span class="s0">;</span>
+                <span class="s1">System.out.println(mHour)</span><span class="s0">;</span>
+                <span class="s1">System.out.println(mMinute)</span><span class="s0">;</span>
+                <span class="s1">timePickerDialog.show()</span><span class="s0">;</span>
+            <span class="s1">}</span>
+
+    <span class="s1">}</span>
+<span class="s1">}</span></pre>
+</body>
+</html>
