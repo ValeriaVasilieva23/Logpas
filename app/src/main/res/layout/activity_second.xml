@@ -6,7 +6,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Что"
+            android:text="What"
             />
     </TableRow>
     <TableRow>
@@ -16,21 +16,39 @@
         android:layout_weight="1"
         android:inputType="textMultiLine"
         android:lines="3"
-        android:hint="Добавьте задание" />
+        android:hint="Add a task" />
+    </TableRow>
+    <TableRow>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Additionally"
+            android:visibility="visible"
+            />
+    </TableRow>
+    <TableRow>
+        <EditText android:id="@+id/edit_message1"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:inputType="textMultiLine"
+            android:lines="3"
+            android:hint="Enter additional information for this task" />
     </TableRow>
 
     <TableRow>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Когда" />
+            android:text="When" />
     </TableRow>
     <TableRow>
 
         <EditText
-            android:layout_width="200dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/in_date"
+            android:layout_weight="1"
              />
 
         <Button
@@ -38,20 +56,23 @@
             android:layout_height="wrap_content"
             android:text="SELECT DATE"
             android:id="@+id/btn_date"
+            android:layout_weight="1"
             />
     </TableRow>
 
     <TableRow>
         <EditText
-            android:layout_width="200dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/in_time" />
+            android:id="@+id/in_time"
+            android:layout_weight="1"/>
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="SELECT TIME"
-            android:id="@+id/btn_time" />
+            android:id="@+id/btn_time"
+            android:layout_weight="1"/>
     </TableRow>
 
     <TableRow
@@ -62,8 +83,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="saveTask"
-            android:text="Сохранить"
-            android:id="@+id/btn_save">
+            android:text="Save"
+            android:id="@+id/btn_save"
+            android:layout_weight="1">
 
         </Button>
         <Button

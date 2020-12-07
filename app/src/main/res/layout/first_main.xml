@@ -12,7 +12,9 @@
         android:layout_height="wrap_content"
         android:choiceMode="multipleChoice"
         android:listSelector="#ffdb700b"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+
+        />
 
     <LinearLayout
         android:layout_width="match_parent"

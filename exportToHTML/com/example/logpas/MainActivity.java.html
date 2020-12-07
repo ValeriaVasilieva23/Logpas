@@ -6,8 +6,8 @@
 .s0 { color: #cc7832;}
 .s1 { color: #a9b7c6;}
 .s2 { color: #808080;}
-.s3 { color: #6a8759;}
-.s4 { color: #6897bb;}
+.s3 { color: #6897bb;}
+.s4 { color: #6a8759;}
 </style>
 </head>
 <body bgcolor="#2b2b2b">
@@ -19,129 +19,154 @@ MainActivity.java</font>
 <pre><span class="s0">package </span><span class="s1">com.example.logpas</span><span class="s0">;</span>
 
 <span class="s0">import </span><span class="s1">androidx.annotation.RequiresApi</span><span class="s0">;</span>
-<span class="s0">import </span><span class="s1">androidx.appcompat.app.AppCompatActivity</span><span class="s0">;</span>
 
 <span class="s0">import </span><span class="s1">android.app.ListActivity</span><span class="s0">;</span>
 <span class="s0">import </span><span class="s1">android.content.ContentValues</span><span class="s0">;</span>
-<span class="s0">import </span><span class="s1">android.content.Context</span><span class="s0">;</span>
 <span class="s0">import </span><span class="s1">android.content.Intent</span><span class="s0">;</span>
 <span class="s0">import </span><span class="s1">android.database.Cursor</span><span class="s0">;</span>
 <span class="s0">import </span><span class="s1">android.database.sqlite.SQLiteDatabase</span><span class="s0">;</span>
 <span class="s0">import </span><span class="s1">android.icu.util.Calendar</span><span class="s0">;</span>
 <span class="s0">import </span><span class="s1">android.os.Build</span><span class="s0">;</span>
 <span class="s0">import </span><span class="s1">android.os.Bundle</span><span class="s0">;</span>
-<span class="s0">import </span><span class="s1">android.os.Parcelable</span><span class="s0">;</span>
 <span class="s0">import </span><span class="s1">android.util.Log</span><span class="s0">;</span>
 <span class="s0">import </span><span class="s1">android.util.SparseBooleanArray</span><span class="s0">;</span>
-<span class="s0">import </span><span class="s1">android.view.LayoutInflater</span><span class="s0">;</span>
 <span class="s0">import </span><span class="s1">android.view.View</span><span class="s0">;</span>
-<span class="s0">import </span><span class="s1">android.view.ViewGroup</span><span class="s0">;</span>
 <span class="s0">import </span><span class="s1">android.widget.AdapterView</span><span class="s0">;</span>
 <span class="s0">import </span><span class="s1">android.widget.ArrayAdapter</span><span class="s0">;</span>
 <span class="s0">import </span><span class="s1">android.widget.Button</span><span class="s0">;</span>
 <span class="s0">import </span><span class="s1">android.widget.CheckBox</span><span class="s0">;</span>
-<span class="s0">import </span><span class="s1">android.widget.CheckedTextView</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.CompoundButton</span><span class="s0">;</span>
 <span class="s0">import </span><span class="s1">android.widget.EditText</span><span class="s0">;</span>
-<span class="s0">import </span><span class="s1">android.widget.GridView</span><span class="s0">;</span>
 <span class="s0">import </span><span class="s1">android.widget.ListView</span><span class="s0">;</span>
-<span class="s0">import </span><span class="s1">android.widget.RelativeLayout</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.RadioGroup</span><span class="s0">;</span>
 <span class="s0">import </span><span class="s1">android.widget.TextView</span><span class="s0">;</span>
 <span class="s0">import </span><span class="s1">android.widget.Toast</span><span class="s0">;</span>
 
+<span class="s0">import </span><span class="s1">java.io.File</span><span class="s0">;</span>
 <span class="s0">import </span><span class="s1">java.util.ArrayList</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.util.List</span><span class="s0">;</span>
 
-<span class="s0">public class </span><span class="s1">MainActivity </span><span class="s0">extends </span><span class="s1">ListActivity </span><span class="s2">/*implements View.OnClickListener*/ </span><span class="s1">{</span>
+<span class="s0">public class </span><span class="s1">MainActivity </span><span class="s0">extends </span><span class="s1">ListActivity </span><span class="s2">/*implements View.OnClickListener*/</span><span class="s1">{</span>
     <span class="s1">ArrayList&lt;String&gt; tasks = </span><span class="s0">new </span><span class="s1">ArrayList&lt;String&gt;()</span><span class="s0">;</span>
+    <span class="s1">ArrayList&lt;String&gt; additionAr = </span><span class="s0">new </span><span class="s1">ArrayList&lt;String&gt;()</span><span class="s0">;</span>
     <span class="s1">ArrayList&lt;Integer&gt; ids = </span><span class="s0">new </span><span class="s1">ArrayList&lt;Integer&gt;()</span><span class="s0">;</span>
-    <span class="s1">ArrayList&lt;Boolean&gt;statuses =</span><span class="s0">new </span><span class="s1">ArrayList&lt;Boolean&gt;()</span><span class="s0">;</span>
-    <span class="s1">Button btnAdd</span><span class="s0">, </span><span class="s1">btnEdit</span><span class="s0">, </span><span class="s1">btnDone</span><span class="s0">;</span>
+    <span class="s1">ArrayList&lt;Boolean&gt; statuses = </span><span class="s0">new </span><span class="s1">ArrayList&lt;Boolean&gt;()</span><span class="s0">;</span>
+    <span class="s1">View v</span><span class="s0">;</span>
+
+    <span class="s1">Button btnAdd</span><span class="s0">, </span><span class="s1">btnEdit</span><span class="s0">, </span><span class="s1">btnDone</span><span class="s0">, </span><span class="s1">btncancel</span><span class="s0">, </span><span class="s1">deletetask</span><span class="s0">;</span>
     <span class="s1">ListView list</span><span class="s0">;</span>
     <span class="s1">DBHelper dbHelper</span><span class="s0">;</span>
-    <span class="s0">public int </span><span class="s1">selectedRowIndex</span><span class="s0">;</span>
+    <span class="s1">CheckBox checkBox</span><span class="s0">;</span>
+    <span class="s1">ArrayAdapter&lt;String&gt; adapter</span><span class="s0">;</span>
+    <span class="s0">public int </span><span class="s1">selectedRowIndex=-</span><span class="s3">1</span><span class="s0">;</span>
+    <span class="s0">int </span><span class="s1">idIndex</span><span class="s0">;</span>
+    <span class="s0">int </span><span class="s1">taskIndex</span><span class="s0">;</span>
+    <span class="s0">int </span><span class="s1">dateIndex</span><span class="s0">;</span>
+    <span class="s0">int </span><span class="s1">timeIndex</span><span class="s0">;</span>
+    <span class="s0">int </span><span class="s1">statusIndex</span><span class="s0">;</span>
+    <span class="s0">int </span><span class="s1">additionIndex</span><span class="s0">;</span>
+
 
 
     <span class="s1">@RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)</span>
     <span class="s1">@Override</span>
     <span class="s0">protected void </span><span class="s1">onCreate(Bundle savedInstanceState) {</span>
-        <span class="s1">System.out.println(</span><span class="s3">&quot;вопдлывлимыьдвлмиыьдл&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">System.out.println(</span><span class="s4">&quot;вопдлывлимыьдвлмиыьдл&quot;</span><span class="s1">)</span><span class="s0">;</span>
         <span class="s0">super</span><span class="s1">.onCreate(savedInstanceState)</span><span class="s0">;</span>
         <span class="s1">setContentView(R.layout.first_main)</span><span class="s0">;</span>
 
 
 
-        <span class="s1">AdapterView.OnItemClickListener itemListener = </span><span class="s0">new </span><span class="s1">AdapterView.OnItemClickListener() {</span>
+       <span class="s2">// });</span>
+       <span class="s2">// String result = &quot;&quot;;</span>
+       <span class="s2">/* List&lt;String&gt; resultList = getCheckedItems(); 
+        for (int i = 0; i &lt; resultList.size(); i++) { 
+            result += resultList.get(i); 
+            System.out.println(result+&quot;льдл ьюб юбьжь жбьжд&quot;); 
+        }*/</span>
+
+     <span class="s2">//   Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG)</span>
+              <span class="s2">//  .show();</span>
+
+        <span class="s1">btncancel = (Button) findViewById(R.id.cancel)</span><span class="s0">;</span>
+
+       <span class="s1">AdapterView.OnItemClickListener itemListener = </span><span class="s0">new </span><span class="s1">AdapterView.OnItemClickListener() {</span>
             <span class="s1">@Override</span>
             <span class="s0">public void </span><span class="s1">onItemClick(AdapterView&lt;?&gt; parent</span><span class="s0">, </span><span class="s1">View v</span><span class="s0">, int </span><span class="s1">position</span><span class="s0">, long </span><span class="s1">id) {</span>
 
                 <span class="s1">selectedRowIndex = position</span><span class="s0">;</span>
-                <span class="s1">System.out.println(</span><span class="s3">&quot;onItemClick_postition:&quot; </span><span class="s1">+ position)</span><span class="s0">;</span>
-                <span class="s1">System.out.println(</span><span class="s3">&quot;onItemClick_id:&quot; </span><span class="s1">+ id)</span><span class="s0">;</span>
+                <span class="s1">System.out.println(</span><span class="s4">&quot;onItemClick_postition:&quot; </span><span class="s1">+ position)</span><span class="s0">;</span>
+                <span class="s1">System.out.println(</span><span class="s4">&quot;onItemClick_id:&quot; </span><span class="s1">+ id)</span><span class="s0">;</span>
             <span class="s1">}</span>
         <span class="s1">}</span><span class="s0">;</span>
         <span class="s1">getListView().setOnItemClickListener(itemListener)</span><span class="s0">;</span>
 
         <span class="s1">dbHelper = </span><span class="s0">new </span><span class="s1">DBHelper(</span><span class="s0">this</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">File dbFile = getDatabasePath(DBHelper.DATABASE_NAME)</span><span class="s0">;</span>
+        <span class="s1">System.out.println(dbFile)</span><span class="s0">;</span>
         <span class="s1">SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase()</span><span class="s0">;</span>
-       <span class="s2">// dbHelper.CreateTasksTable(sqLiteDatabase);</span>
-        <span class="s1">Cursor cursor = sqLiteDatabase.query(DBHelper.TABLE_TASKS2</span><span class="s0">, null, null, null, null, null, null</span><span class="s1">)</span><span class="s0">;</span>
-        <span class="s1">System.out.println(</span><span class="s3">&quot;cursor on TABLE_TASKS2 started&quot;</span><span class="s1">)</span><span class="s0">;</span>
-        <span class="s0">if </span><span class="s1">(cursor.moveToFirst()){</span>
+        <span class="s2">// dbHelper.CreateTasksTable(sqLiteDatabase);</span>
+        <span class="s1">Cursor cursor = sqLiteDatabase.query(DBHelper.TABLE_TASKS2</span><span class="s0">, null, null, null, null, null, null</span><span class="s2">/*&quot; ID desc&quot;*/</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">System.out.println(</span><span class="s4">&quot;cursor on TABLE_TASKS2 started&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s0">if </span><span class="s1">(cursor.moveToFirst()) {</span>
 
-            <span class="s0">int </span><span class="s1">idIndex = cursor.getColumnIndex(DBHelper.ID)</span><span class="s0">;</span>
-            <span class="s0">int </span><span class="s1">taskIndex = cursor.getColumnIndex(DBHelper.TASK)</span><span class="s0">;</span>
-            <span class="s0">int </span><span class="s1">dateIndex = cursor.getColumnIndex(DBHelper.DATE)</span><span class="s0">;</span>
-            <span class="s0">int </span><span class="s1">timeIndex = cursor.getColumnIndex(DBHelper.TIME)</span><span class="s0">;</span>
-            <span class="s0">int </span><span class="s1">statusIndex = cursor.getColumnIndex(DBHelper.STATUS)</span><span class="s0">;</span>
+            <span class="s1">idIndex = cursor.getColumnIndex(DBHelper.ID)</span><span class="s0">;</span>
+            <span class="s1">taskIndex = cursor.getColumnIndex(DBHelper.TASK)</span><span class="s0">;</span>
+            <span class="s1">dateIndex = cursor.getColumnIndex(DBHelper.DATE)</span><span class="s0">;</span>
+            <span class="s1">timeIndex = cursor.getColumnIndex(DBHelper.TIME)</span><span class="s0">;</span>
+            <span class="s1">statusIndex = cursor.getColumnIndex(DBHelper.STATUS)</span><span class="s0">;</span>
+            <span class="s1">additionIndex=cursor.getColumnIndex(DBHelper.ADDITION)</span><span class="s0">;</span>
+
             <span class="s1">System.out.println(statusIndex)</span><span class="s0">;</span>
             <span class="s1">System.out.println(idIndex)</span><span class="s0">;</span>
             <span class="s1">System.out.println(taskIndex)</span><span class="s0">;</span>
             <span class="s1">System.out.println(dateIndex)</span><span class="s0">;</span>
             <span class="s1">System.out.println(timeIndex)</span><span class="s0">;</span>
-            <span class="s0">while </span><span class="s1">(cursor.moveToNext()){</span>
+            <span class="s1">System.out.println(additionIndex)</span><span class="s0">;</span>
+            <span class="s1">getTasksLine(cursor)</span><span class="s0">;</span>
+            <span class="s0">while </span><span class="s1">(cursor.moveToNext()) {</span>
                 <span class="s2">// int[] values = { cursor.getColumnIndex(DBHelper.ID), cursor.getColumnIndex(DBHelper.TASK), cursor.getColumnIndex(DBHelper.DATE), cursor.getColumnIndex(DBHelper.TIME)};</span>
 
-                <span class="s1">Log.d(</span><span class="s3">&quot;MainActivity&quot;</span><span class="s0">, </span><span class="s3">&quot;id=&quot; </span><span class="s1">+ cursor.getInt(idIndex) + </span><span class="s3">&quot;,task=&quot; </span><span class="s1">+ cursor.getString(taskIndex) + </span><span class="s3">&quot;,date=&quot;</span>
-                        <span class="s1">+ cursor.getString(dateIndex) + </span><span class="s3">&quot;,time=&quot; </span><span class="s1">+ cursor.getString(timeIndex))</span><span class="s0">;</span>
-                <span class="s0">int </span><span class="s1">id = cursor.getInt(idIndex)</span><span class="s0">;</span>
-                <span class="s1">String task = cursor.getString(taskIndex)</span><span class="s0">;</span>
-                <span class="s1">String date = cursor.getString(dateIndex)</span><span class="s0">;</span>
-                <span class="s1">String time = cursor.getString(timeIndex)</span><span class="s0">;</span>
-               <span class="s1">String statusStr = cursor.getString(statusIndex)</span><span class="s0">;</span>
-                <span class="s1">Boolean status=</span><span class="s0">false;</span>
-               <span class="s0">if </span><span class="s1">(statusStr!=</span><span class="s0">null</span><span class="s1">)</span>
-                  <span class="s1">status=Boolean.parseBoolean(statusStr)</span><span class="s0">;</span>
-                <span class="s1">ids.add(id)</span><span class="s0">;</span>
-
-<span class="s1">statuses.add(status)</span><span class="s0">;</span>
-        <span class="s1">tasks.add(task + </span><span class="s3">&quot; &quot; </span><span class="s1">+ date + </span><span class="s3">&quot; &quot; </span><span class="s1">+ time)</span><span class="s0">;</span>
+                <span class="s1">Log.d(</span><span class="s4">&quot;MainActivity&quot;</span><span class="s0">, </span><span class="s4">&quot;id=&quot; </span><span class="s1">+ cursor.getInt(idIndex) + </span><span class="s4">&quot;,task=&quot; </span><span class="s1">+ cursor.getString(taskIndex) + </span><span class="s4">&quot;,date=&quot;</span>
+                        <span class="s1">+ cursor.getString(dateIndex) + </span><span class="s4">&quot;,time=&quot; </span><span class="s1">+ cursor.getString(timeIndex))</span><span class="s0">;</span>
+                <span class="s1">getTasksLine(cursor)</span><span class="s0">;</span>
                 <span class="s2">//tasks.add(date);</span>
                 <span class="s2">//tasks.add(time);</span>
 
-               <span class="s2">/* ArrayAdapter&lt;String&gt; adapter = new ArrayAdapter&lt;String&gt;(this, 
-                        android.R.layout.simple_list_item_1, tasks); 
-                setListAdapter(adapter);*/</span>
 
-            <span class="s1">} </span>
-            <span class="s1">setListActivity(tasks)</span><span class="s0">;</span>
-        <span class="s1">}  Log.d(</span><span class="s3">&quot;mLog&quot;</span><span class="s0">, </span><span class="s3">&quot;0 rows&quot;</span><span class="s1">)</span><span class="s0">;</span>
+
+            <span class="s1">}</span>
+            <span class="s2">//setListActivity(tasks);</span>
+        <span class="s1">}</span>
+        <span class="s1">Log.d(</span><span class="s4">&quot;mLog&quot;</span><span class="s0">, </span><span class="s4">&quot;0 rows&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">setListActivity(tasks)</span><span class="s0">;</span>
+
+
+
         <span class="s2">//list = (ListView) findViewById(android.R.id.list);</span>
-       <span class="s2">// ArrayAdapter&lt;String&gt; adapter = new ArrayAdapter&lt;String&gt;(this, R.layout.row_layout, R.id.txt_lan, tasks);</span>
+        <span class="s2">// ArrayAdapter&lt;String&gt; adapter = new ArrayAdapter&lt;String&gt;(this, R.layout.row_layout, R.id.txt_lan, tasks);</span>
         <span class="s2">//list.setAdapter(adapter);</span>
         <span class="s2">// создаем адаптер</span>
-       <span class="s1">ArrayAdapter&lt;String&gt; adapter = </span><span class="s0">new </span><span class="s1">ArrayAdapter(</span><span class="s0">this,</span>
-              <span class="s1">android.R.layout.simple_list_item_multiple_choice</span><span class="s0">, </span><span class="s1">tasks)</span><span class="s0">;</span>
+        <span class="s2">// ArrayAdapter&lt;String&gt; adapter = new ArrayAdapter(this,</span>
+        <span class="s2">//android.R.layout.simple_list_item_multiple_choice, tasks);</span>
         <span class="s2">// устанавливаем для списка адаптер</span>
-        <span class="s1">list.setAdapter(adapter)</span><span class="s0">;</span>
+        <span class="s2">//list.setAdapter(adapter);</span>
         <span class="s2">// добвляем для списка слушатель</span>
-        <span class="s1">list.setOnItemClickListener(</span><span class="s0">new </span><span class="s1">AdapterView.OnItemClickListener(){</span>
-            <span class="s1">@Override</span>
-            <span class="s0">public void </span><span class="s1">onItemClick(AdapterView&lt;?&gt; parent</span><span class="s0">, </span><span class="s1">View v</span><span class="s0">, int </span><span class="s1">position</span><span class="s0">, long </span><span class="s1">id)</span>
-            <span class="s1">{</span>
-                <span class="s1">SparseBooleanArray sp=list.getCheckedItemPositions()</span><span class="s0">;</span>
 
-                <span class="s1">list.setItemChecked(position</span><span class="s0">, false</span><span class="s1">)</span><span class="s0">;</span>
-                <span class="s1">selectedRowIndex = position</span><span class="s0">;</span>
 
+
+
+
+       <span class="s2">/* list.setOnItemClickListener(new AdapterView.OnItemClickListener() { 
+            @Override 
+            public void onItemClick(AdapterView&lt;?&gt; parent, View v, int position, long id) { 
+                SparseBooleanArray sp = list.getCheckedItemPositions(); 
+ 
+                list.setItemChecked(position, false); 
+                selectedRowIndex = position; 
+                System.out.println(selectedRowIndex+&quot;ДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДД&quot;); 
+                System.out.println(id); 
+*/</span>
                <span class="s2">/* String selectedItems=&quot;&quot;; 
                 for(int i=0;i &lt; tasks.size();i++) 
                 { 
@@ -151,7 +176,20 @@ MainActivity.java</font>
                 // установка текста элемента TextView*/</span>
 
             <span class="s1">}</span>
-        <span class="s1">})</span><span class="s0">;</span>
+
+   <span class="s2">/* private List&lt;String&gt; getCheckedItems() { 
+        List&lt;String&gt; checkedItems = new ArrayList&lt;&gt;(); 
+ 
+        for (int i = 0; i &lt; Adapter.mCheckedMap.size(); i++) { 
+            if (Adapter.mCheckedMap.get(i)) { 
+                (checkedItems).add(tasks.get(i)); 
+ 
+            } 
+        } 
+ 
+        return checkedItems; 
+    }*/</span>
+
 
       <span class="s2">/*  list.setOnItemClickListener(new AdapterView.OnItemClickListener() { 
             @Override 
@@ -161,9 +199,9 @@ MainActivity.java</font>
                 if (tasks.contains(selectedItem)) { 
                     tasks.remove(selectedItem); 
                 } else tasks.add(selectedItem);*/</span>
-                <span class="s2">// Получаем флажок</span>
-               <span class="s2">// CheckedTextView language = (CheckedTextView) view;</span>
-                <span class="s2">// Получаем, отмечен ли данный флажок</span>
+        <span class="s2">// Получаем флажок</span>
+        <span class="s2">// CheckedTextView language = (CheckedTextView) view;</span>
+        <span class="s2">// Получаем, отмечен ли данный флажок</span>
                <span class="s2">/* boolean checked = language.isChecked(); 
  
                 TextView selection = (TextView) findViewById(R.id.selection); 
@@ -180,81 +218,69 @@ MainActivity.java</font>
                         break; 
                 } 
             }*/</span>
-            <span class="s2">//}</span>
-       <span class="s2">// });</span>
+        <span class="s2">//}</span>
+        <span class="s2">// });</span>
 
-        <span class="s1">cursor.close()</span><span class="s0">;</span>
+        <span class="s2">//cursor.close();</span>
+        <span class="s2">//System.out.println(selectedRowIndex);</span>
+
+
+    <span class="s0">private void </span><span class="s1">getTasksLine(Cursor cursor) {</span>
+        <span class="s0">int </span><span class="s1">id = cursor.getInt(idIndex)</span><span class="s0">;</span>
+        <span class="s1">String task = cursor.getString(taskIndex)</span><span class="s0">;</span>
+        <span class="s1">String date = cursor.getString(dateIndex)</span><span class="s0">;</span>
+        <span class="s1">String time = cursor.getString(timeIndex)</span><span class="s0">;</span>
+        <span class="s1">String statusStr = cursor.getString(statusIndex)</span><span class="s0">;</span>
+        <span class="s1">String addition =  cursor.getString(additionIndex)</span><span class="s0">;</span>
+        <span class="s1">Boolean status = </span><span class="s0">true;</span>
+        <span class="s2">//System.out.println(statusStr);</span>
+        <span class="s0">if </span><span class="s1">(statusStr != </span><span class="s0">null</span><span class="s1">) {</span>
+            <span class="s0">if </span><span class="s1">(statusStr.equals(</span><span class="s4">&quot;1&quot;</span><span class="s1">)) {</span>
+                <span class="s1">status = </span><span class="s0">true;</span>
+
+            <span class="s1">} </span><span class="s0">else </span><span class="s1">{</span>
+                <span class="s1">status = </span><span class="s0">false;</span>
+            <span class="s1">}</span>
+        <span class="s1">} </span><span class="s0">else </span><span class="s1">{</span>
+            <span class="s1">status = </span><span class="s0">false;</span>
+        <span class="s1">}</span>
+
+
+        <span class="s2">//System.out.println(status);</span>
+        <span class="s1">ids.add(id)</span><span class="s0">;</span>
+
+        <span class="s1">statuses.add(status)</span><span class="s0">;</span>
+        <span class="s1">tasks.add(task + </span><span class="s4">&quot; &quot; </span><span class="s1">+ date + </span><span class="s4">&quot; &quot; </span><span class="s1">+ time )</span><span class="s0">;</span>
+        <span class="s1">additionAr.add(addition)</span><span class="s0">;</span>
+
+
+
+
+
     <span class="s1">}</span>
-    <span class="s2">/* 
-    private class ViewHolder { 
-        TextView code; 
-        CheckBox name; 
-    } 
-    @Override 
-    public View getView(int position, View convertView, ViewGroup parent) { 
- 
-        ViewHolder holder = null; 
- 
- 
- 
-        if (convertView == null) { 
- 
-            LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE); 
- 
-            convertView = vi.inflate(R.layout.row_layout, null); 
- 
-            holder = new ViewHolder(); 
-            holder.code = (TextView) convertView.findViewById(R.id.code); 
-            holder.name = (CheckedTextView) convertView 
-                    .findViewById(R.id.txt_lan); 
- 
-            convertView.setTag(holder); 
- 
-            holder.name.setOnClickListener(new View.OnClickListener() { 
-                public void onClick(View v) { 
-                    CheckBox cb = (CheckBox) v; 
-                    States _state = (States) cb.getTag(); 
- 
-                    Toast.makeText( 
-                            getApplicationContext(), 
-                            &quot;Checkbox: &quot; + cb.getText() + &quot; -&gt; &quot; 
-                                    + cb.isChecked(), Toast.LENGTH_LONG) 
-                            .show(); 
- 
-                    _state.setSelected(cb.isChecked()); 
-                } 
-            }); 
- 
-        } else { 
-            holder = (ViewHolder) convertView.getTag(); 
-        } 
- 
-        States state = stateList.get(position); 
- 
-        holder.code.setText(&quot; (&quot; + state.getCode() + &quot;)&quot;); 
-        holder.name.setText(state.getName()); 
-        holder.name.setChecked(state.isSelected()); 
- 
-        holder.name.setTag(state); 
- 
-        return convertView; 
-    } 
- 
-}*/</span>
+
 
     <span class="s0">public void </span><span class="s1">setListActivity(ArrayList array) {</span>
         <span class="s1">removeListActivity()</span><span class="s0">;</span>
-        <span class="s1">ArrayAdapter&lt;String&gt; adapter = </span><span class="s0">new </span><span class="s1">ArrayAdapter&lt;String&gt;(</span><span class="s0">this,</span>
-               <span class="s1">android.R.layout.simple_list_item_1</span><span class="s0">, </span><span class="s1">array)</span><span class="s0">;</span>
-        <span class="s1">list = (ListView) findViewById(android.R.id.list)</span><span class="s0">;</span>
+        <span class="s2">/*ArrayAdapter&lt;String&gt; adapter = new ArrayAdapter&lt;String&gt;(this, 
+                android.R.layout.simple_list_item_multiple_choice); 
+        list = (ListView) findViewById(android.R.id.list); 
+ 
+        list.setAdapter(adapter);*/</span>
+
+        <span class="s1">setListAdapter(</span><span class="s0">new </span><span class="s1">Adapter(</span><span class="s0">this,</span><span class="s1">tasks</span><span class="s0">,</span><span class="s1">additionAr</span><span class="s0">,</span><span class="s1">statuses))</span><span class="s0">;</span>
+
+       <span class="s2">// list.setOnItemClickListener(myOnItemClickListener);</span>
+
+
         <span class="s2">// ArrayAdapter&lt;String&gt; adapter = new ArrayAdapter&lt;String&gt;(this, R.layout.row_layout, R.id.txt_lan, tasks);</span>
 
-        <span class="s1">list.setAdapter(adapter)</span><span class="s0">;</span>
 
-        <span class="s1">setListAdapter(adapter)</span><span class="s0">;</span>
-        <span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">i=</span><span class="s4">0</span><span class="s0">;</span><span class="s1">i&lt;statuses.size()</span><span class="s0">;</span><span class="s1">i++){</span>
-            <span class="s1">list.setItemChecked(i</span><span class="s0">,</span><span class="s1">statuses.get(i))</span><span class="s0">;</span>
-        <span class="s1">}</span>
+
+        <span class="s2">//setListAdapter(adapter);</span>
+
+
+
     <span class="s1">}</span>
 
     <span class="s0">public void </span><span class="s1">removeListActivity() {</span>
@@ -263,37 +289,69 @@ MainActivity.java</font>
 
 
     <span class="s0">public void </span><span class="s1">addTask(View view) {</span>
-        <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(</span><span class="s0">this, </span><span class="s1">SecondActivity.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(</span><span class="s0">this, </span><span class="s1">AddActivity.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
         <span class="s1">startActivity(intent)</span><span class="s0">;</span>
-        <span class="s1">String strToAdd = getIntent().getStringExtra(</span><span class="s3">&quot;stringToAdd&quot;</span><span class="s1">)</span><span class="s0">;</span>
-        <span class="s1">tasks.set(selectedRowIndex</span><span class="s0">, </span><span class="s1">strToAdd)</span><span class="s0">;</span>
-        <span class="s1">tasks.add(strToAdd)</span><span class="s0">;</span><span class="s2">//СПРОСИТЬ У РОМЫ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!</span>
         <span class="s1">setListActivity(tasks)</span><span class="s0">;</span>
+
     <span class="s1">}</span>
 
     <span class="s0">public void </span><span class="s1">editTask(View view) {</span>
         <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(</span><span class="s0">this, </span><span class="s1">EditActivity.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
         <span class="s0">int </span><span class="s1">idForEdit = ids.get(selectedRowIndex)</span><span class="s0">;</span>
-        <span class="s1">intent.putExtra(</span><span class="s3">&quot;TaskId&quot;</span><span class="s0">, </span><span class="s1">idForEdit)</span><span class="s0">;</span>
+        <span class="s1">intent.putExtra(</span><span class="s4">&quot;TaskId&quot;</span><span class="s0">, </span><span class="s1">idForEdit)</span><span class="s0">;</span>
         <span class="s1">startActivity(intent)</span><span class="s0">;</span>
-        <span class="s1">String strToAdd = getIntent().getStringExtra(</span><span class="s3">&quot;stringToAdd&quot;</span><span class="s1">)</span><span class="s0">;</span>
-        <span class="s1">tasks.set(selectedRowIndex</span><span class="s0">, </span><span class="s1">strToAdd)</span><span class="s0">;</span>
+        <span class="s2">//String strToAdd = getIntent().getStringExtra(&quot;stringToAdd&quot;);</span>
+        <span class="s2">//tasks.set(selectedRowIn-dex, strToAdd);</span>
         <span class="s1">setListActivity(tasks)</span><span class="s0">;</span>
     <span class="s1">}</span>
 
-    <span class="s0">public void </span><span class="s1">doneTask(View view) {</span>
-        <span class="s0">boolean </span><span class="s1">isChecked = list.isItemChecked(selectedRowIndex)</span><span class="s0">;</span>
-        <span class="s0">boolean </span><span class="s1">newValue = !isChecked</span><span class="s0">;</span>
 
-        <span class="s1">ContentValues contentValues = </span><span class="s0">new </span><span class="s1">ContentValues()</span><span class="s0">;</span>
-        <span class="s1">contentValues.put(DBHelper.STATUS</span><span class="s0">,</span><span class="s1">newValue)</span><span class="s0">;</span>
-        <span class="s1">DBHelper dbHelper= </span><span class="s0">new </span><span class="s1">DBHelper(</span><span class="s0">this</span><span class="s1">)</span><span class="s0">;</span>
+    <span class="s0">public void </span><span class="s1">deleteTask(View v) {</span>
+        <span class="s0">int </span><span class="s1">id = ids.get(selectedRowIndex)</span><span class="s0">;</span>
+        <span class="s1">deletetask = (Button) findViewById(R.id.deleteTask)</span><span class="s0">;</span>
+        <span class="s1">DBHelper dbHelper = </span><span class="s0">new </span><span class="s1">DBHelper(</span><span class="s0">this</span><span class="s1">)</span><span class="s0">;</span>
         <span class="s1">SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase()</span><span class="s0">;</span>
-        <span class="s1">sqLiteDatabase.update(DBHelper.TABLE_TASKS2</span><span class="s0">, </span><span class="s1">contentValues</span><span class="s0">, </span><span class="s1">DBHelper.ID + </span><span class="s3">&quot;=&quot; </span><span class="s1">+ids.get(selectedRowIndex )</span><span class="s0">, null</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">sqLiteDatabase.delete(DBHelper.TABLE_TASKS2</span><span class="s0">, </span><span class="s1">DBHelper.ID + </span><span class="s4">&quot; = ?&quot;</span><span class="s0">, new </span><span class="s1">String[]{String.valueOf(id)})</span><span class="s0">;</span>
+        <span class="s1">recreate()</span><span class="s0">;</span>
 
-        <span class="s1">list.setItemChecked(selectedRowIndex</span><span class="s0">, </span><span class="s1">newValue)</span><span class="s0">;</span>
 
     <span class="s1">}</span>
+
+
+
+
+    <span class="s0">public void </span><span class="s1">doneTask(View view) {</span>
+       <span class="s2">// if (selectedRowIndex==-1){}else{</span>
+        <span class="s0">boolean </span><span class="s1">isChecked =statuses.get(selectedRowIndex)</span><span class="s0">;</span>
+        <span class="s0">boolean </span><span class="s1">newValue = !isChecked</span><span class="s0">;</span>
+        <span class="s1">ContentValues contentValues = </span><span class="s0">new </span><span class="s1">ContentValues()</span><span class="s0">;</span>
+        <span class="s1">contentValues.put(DBHelper.STATUS</span><span class="s0">, </span><span class="s1">newValue)</span><span class="s0">;</span>
+        <span class="s1">DBHelper dbHelper = </span><span class="s0">new </span><span class="s1">DBHelper(</span><span class="s0">this</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase()</span><span class="s0">;</span>
+        <span class="s1">sqLiteDatabase.update(DBHelper.TABLE_TASKS2</span><span class="s0">, </span><span class="s1">contentValues</span><span class="s0">, </span><span class="s1">DBHelper.ID + </span><span class="s4">&quot;=&quot; </span><span class="s1">+ ids.get(selectedRowIndex)</span><span class="s0">, null</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">CheckBox selectedCB =(CheckBox) v.findViewById(R.id.cbBox)</span><span class="s0">;</span>
+<span class="s1">selectedCB.setChecked(newValue)</span><span class="s0">;</span>
+        <span class="s2">/*setListActivity(tasks); 
+recreate();}*/</span>
+
+        <span class="s2">/* boolean isChecked = list.isItemChecked(selectedRowIndex); 
+        boolean newValue = !isChecked; 
+        System.out.println(isChecked); 
+ 
+        ContentValues contentValues = new ContentValues(); 
+        contentValues.put(DBHelper.STATUS, newValue); 
+        DBHelper dbHelper = new DBHelper(this); 
+        SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase(); 
+        sqLiteDatabase.update(DBHelper.TABLE_TASKS2, contentValues, DBHelper.ID + &quot;=&quot; + ids.get(selectedRowIndex), null); 
+ 
+        list.setItemChecked(selectedRowIndex, true);*/</span>
+        <span class="s2">//list.setItemChecked(selectedRowIndex, true);</span>
+
+    <span class="s1">}</span>
+
+
+
+
 
 
 <span class="s1">}</span></pre>

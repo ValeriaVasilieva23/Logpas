@@ -36,6 +36,7 @@ public class EditActivity extends AddActivity {
         Intent intent=getIntent();
         taskId = arguments.getInt("TaskId");
         System.out.println("taskId=" + taskId);
+        EditText editText3 = (EditText) findViewById(R.id.edit_message1);
         EditText editText = (EditText) findViewById(R.id.edit_message);
         EditText editText1=(EditText) findViewById(R.id.in_date);
         EditText editText2=(EditText) findViewById(R.id.in_time);
@@ -50,11 +51,15 @@ public class EditActivity extends AddActivity {
         System.out.println(time);
         int dateIndex = cursor.getColumnIndex(DBHelper.DATE);
         String date = cursor.getString(dateIndex);
+        int additionIndex=cursor.getColumnIndex(DBHelper.ADDITION);
+        String addition = cursor.getString(additionIndex);
         System.out.println(date);
 
         editText.setText("" + task + "", TextView.BufferType.EDITABLE);
         editText1.setText("" + date + "", TextView.BufferType.EDITABLE);
         editText2.setText("" + time + "", TextView.BufferType.EDITABLE);
+        editText3.setText("" + addition + "");
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)

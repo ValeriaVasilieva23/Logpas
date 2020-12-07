@@ -29,7 +29,7 @@ import java.util.SimpleTimeZone;
 public class AddActivity extends AppCompatActivity implements
         View.OnClickListener {
     Button saveTask;
-    EditText edit_message;
+    EditText edit_message,edit_message1;
     Button btnDatePicker, btnTimePicker,btncancel;
     EditText txtDate, txtTime;
     private int mYear, mMonth, mDay, mHour, mMinute;
@@ -50,6 +50,7 @@ public class AddActivity extends AppCompatActivity implements
         txtDate = (EditText) findViewById(R.id.in_date);
         txtTime = (EditText) findViewById(R.id.in_time);
         edit_message = (EditText) findViewById(R.id.edit_message);
+        edit_message1=(EditText) findViewById(R.id.edit_message1);
 
         btnDatePicker.setOnClickListener(this);
         btnTimePicker.setOnClickListener(this);
@@ -98,11 +99,13 @@ edit_message.addTextChangedListener(new TextWatcher() {
 
         String date = txtDate.getText().toString();
         String time = txtTime.getText().toString();
+        String addition = edit_message1.getText().toString();
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.DATE, date);
         contentValues.put(DBHelper.TASK, task);
         contentValues.put(DBHelper.TIME, time);
+        contentValues.put(DBHelper.ADDITION,addition);
 
         DBHelper dbHelper= new DBHelper(this);
         SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase();

@@ -1,0 +1,146 @@
+<html>
+<head>
+<title>Adapter.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #808080;}
+.s3 { color: #6a8759;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Adapter.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com.example.logpas</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">android.annotation.SuppressLint</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.content.Context</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.content.Intent</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.os.Bundle</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.LayoutInflater</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.View</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.ViewGroup</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.ArrayAdapter</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.BaseAdapter</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.CheckBox</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.CompoundButton</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.EditText</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.RadioGroup</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.TextView</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">java.util.ArrayList</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.util.HashMap</span><span class="s0">;</span>
+
+<span class="s0">public class </span><span class="s1">Adapter </span><span class="s0">extends </span><span class="s1">BaseAdapter {</span>
+
+    <span class="s0">private </span><span class="s1">Context context</span><span class="s0">;</span>
+    <span class="s0">public </span><span class="s1">ArrayList&lt;Integer&gt; checks</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">ArrayList&lt;String&gt; tasks</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">ArrayList&lt;String&gt; addition</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">ArrayList&lt;Boolean&gt; statuses</span><span class="s0">;</span>
+    <span class="s0">public static </span><span class="s1">HashMap&lt;Integer</span><span class="s0">, </span><span class="s1">Boolean&gt; mCheckedMap = </span><span class="s0">new </span><span class="s1">HashMap&lt;&gt;()</span><span class="s0">;</span>
+      <span class="s1">CheckBox cbBox</span><span class="s0">;</span>
+
+    <span class="s0">public </span><span class="s1">Adapter(Context context</span><span class="s0">, </span><span class="s1">ArrayList&lt;String&gt; task</span><span class="s0">, </span><span class="s1">ArrayList&lt;String&gt; addition</span><span class="s0">,</span><span class="s1">ArrayList&lt;Boolean&gt; statuses) {</span>
+        <span class="s0">this</span><span class="s1">.context = context</span><span class="s0">;</span>
+        <span class="s0">this</span><span class="s1">.tasks = task</span><span class="s0">;</span>
+        <span class="s0">this</span><span class="s1">.addition = addition</span><span class="s0">;</span>
+        <span class="s0">this</span><span class="s1">.statuses=statuses</span><span class="s0">;</span>
+        <span class="s2">/*for (int i = 0; i &lt; tasks.size(); i++) { 
+            mCheckedMap.put(i, statuses.get(i)); 
+        }*/</span>
+
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public int </span><span class="s1">getCount() {</span>
+        <span class="s0">return </span><span class="s1">tasks.size()</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public </span><span class="s1">Object getItem(</span><span class="s0">int </span><span class="s1">position) {</span>
+        <span class="s0">return </span><span class="s1">tasks.get(position)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public long </span><span class="s1">getItemId(</span><span class="s0">int </span><span class="s1">position) {</span>
+        <span class="s1">System.out.println(position)</span><span class="s0">;</span>
+        <span class="s0">return </span><span class="s1">position</span><span class="s0">;</span>
+
+    <span class="s1">}</span>
+
+    <span class="s1">@SuppressLint(</span><span class="s3">&quot;ResourceType&quot;</span><span class="s1">)</span>
+    <span class="s1">@Override</span>
+    <span class="s0">public </span><span class="s1">View getView(</span><span class="s0">int </span><span class="s1">position</span><span class="s0">, </span><span class="s1">View convertView</span><span class="s0">, </span><span class="s1">ViewGroup parent) {</span>
+
+        <span class="s0">if </span><span class="s1">(convertView == </span><span class="s0">null</span><span class="s1">) {</span>
+            <span class="s1">LayoutInflater inflater = (LayoutInflater) context</span>
+                    <span class="s1">.getSystemService(Context.LAYOUT_INFLATER_SERVICE)</span><span class="s0">;</span>
+            <span class="s1">convertView = inflater.inflate(R.layout.maindop</span><span class="s0">, null, false</span><span class="s1">)</span><span class="s0">;</span>
+              <span class="s1">cbBox = (CheckBox) convertView.findViewById(R.id.cbBox)</span><span class="s0">;</span>
+
+            <span class="s2">// присваиваем чекбоксу обработчик</span>
+           <span class="s2">// for (int i = 0; i &lt; statuses.size(); i++) {</span>
+                <span class="s1">cbBox.setChecked(statuses.get(position))</span><span class="s0">;</span>
+
+         <span class="s2">//   }</span>
+            <span class="s2">// пишем позицию</span>
+            <span class="s2">//cbBuy.setTag(position);</span>
+            <span class="s2">// заполняем данными из товаров: в корзине или нет</span>
+
+
+           <span class="s2">/* CompoundButton.OnCheckedChangeListener myCheckChangeList = new CompoundButton.OnCheckedChangeListener() { 
+                public void onCheckedChanged(CompoundButton buttonView, 
+                                             boolean isChecked) { 
+                    cbBuy.setChecked(true); 
+                } 
+            }; 
+            cbBuy.setOnCheckedChangeListener(myCheckChangeList);*/</span>
+        <span class="s1">}</span>
+
+
+
+
+
+        <span class="s1">TextView et1 = (TextView) convertView.findViewById(R.id.task)</span><span class="s0">;</span>
+        <span class="s1">TextView et2 = (TextView) convertView.findViewById(R.id.addition)</span><span class="s0">;</span>
+        <span class="s1">et1.setText(tasks.get(position))</span><span class="s0">;</span>
+        <span class="s1">et2.setText(addition.get(position))</span><span class="s0">;</span>
+        <span class="s1">View view = convertView</span><span class="s0">;</span>
+        <span class="s2">//final CheckBox cbBuy = (CheckBox) view.findViewById(R.id.cbBox);</span>
+        <span class="s2">// присваиваем чекбоксу обработчик</span>
+        <span class="s2">/*for (int i = 0; i &lt; statuses.size(); i++) { 
+ 
+           // cbBuy.setItemChecked(i, statuses.get(i)); 
+            if (statuses.get(i).equals(1))*/</span>
+            <span class="s2">//cbBuy.setChecked(true);</span>
+        <span class="s2">//}</span>
+        <span class="s2">//cbBuy.setChecked(true);</span>
+        <span class="s2">// пишем позицию</span>
+       <span class="s2">/* cbBuy.setTag(position); 
+        // заполняем данными из товаров: в корзине или нет 
+        cbBuy.setChecked(true); 
+        RadioGroup.OnCheckedChangeListener myCheckChangeList = new RadioGroup.OnCheckedChangeListener() { 
+            @Override 
+            public void onCheckedChanged(RadioGroup radioGroup, int i) { 
+                cbBuy.setChecked(true); 
+            } 
+ 
+ 
+ 
+        return convertView; 
+ 
+        }; 
+        // do some work 
+ 
+    }*/</span>
+        <span class="s0">return </span><span class="s1">convertView</span><span class="s0">;</span>
+<span class="s1">}}</span>
+
+</pre>
+</body>
+</html>

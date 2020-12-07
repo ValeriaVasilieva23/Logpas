@@ -16,24 +16,45 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RadioGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
-public class MainActivity extends ListActivity /*implements View.OnClickListener*/ {
+public class MainActivity extends ListActivity /*implements View.OnClickListener*/{
     ArrayList<String> tasks = new ArrayList<String>();
+    private Connection connection;
+    ArrayList<String> additionAr = new ArrayList<String>();
     ArrayList<Integer> ids = new ArrayList<Integer>();
-    ArrayList<Boolean>statuses =new ArrayList<Boolean>();
-    Button btnAdd, btnEdit, btnDone,btncancel,deletetask;
+    ArrayList<Boolean> statuses = new ArrayList<Boolean>();
+    View selectedView;
+    Cursor userCursor;
+
+    Button btnAdd, btnEdit, btnDone, btncancel, deletetask;
     ListView list;
     DBHelper dbHelper;
+    CheckBox checkBox;
+    ArrayAdapter<String> adapter;
     public int selectedRowIndex;
-    int idIndex ;
-    int taskIndex ;
-    int dateIndex ;
-    int timeIndex ;
+    int idIndex;
+    int taskIndex;
+    int dateIndex;
+    int timeIndex;
     int statusIndex;
+    int additionIndex;
+    boolean isChecked=false;
+    int state;
 
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -43,77 +64,98 @@ public class MainActivity extends ListActivity /*implements View.OnClickListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.first_main);
 
+
+
+       // });
+       // String result = "";
+       /* List<String> resultList = getCheckedItems();
+        for (int i = 0; i < resultList.size(); i++) {
+            result += resultList.get(i);
+            System.out.println(result+"льдл ьюб юбьжь жбьжд");
+        }*/
+
+     //   Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG)
+              //  .show();
+
         btncancel = (Button) findViewById(R.id.cancel);
 
-       /* AdapterView.OnItemClickListener itemListener = new AdapterView.OnItemClickListener() {
+       AdapterView.OnItemClickListener itemListener = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-
+selectedView=v;
                 selectedRowIndex = position;
                 System.out.println("onItemClick_postition:" + position);
                 System.out.println("onItemClick_id:" + id);
             }
         };
-        getListView().setOnItemClickListener(itemListener);*/
+        getListView().setOnItemClickListener(itemListener);
 
         dbHelper = new DBHelper(this);
         File dbFile = getDatabasePath(DBHelper.DATABASE_NAME);
         System.out.println(dbFile);
         SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase();
-       // dbHelper.CreateTasksTable(sqLiteDatabase);
+        // dbHelper.CreateTasksTable(sqLiteDatabase);
         Cursor cursor = sqLiteDatabase.query(DBHelper.TABLE_TASKS2, null, null, null, null, null, null/*" ID desc"*/);
         System.out.println("cursor on TABLE_TASKS2 started");
-        if (cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
 
             idIndex = cursor.getColumnIndex(DBHelper.ID);
             taskIndex = cursor.getColumnIndex(DBHelper.TASK);
             dateIndex = cursor.getColumnIndex(DBHelper.DATE);
             timeIndex = cursor.getColumnIndex(DBHelper.TIME);
             statusIndex = cursor.getColumnIndex(DBHelper.STATUS);
+            additionIndex=cursor.getColumnIndex(DBHelper.ADDITION);
+
             System.out.println(statusIndex);
             System.out.println(idIndex);
             System.out.println(taskIndex);
             System.out.println(dateIndex);
             System.out.println(timeIndex);
+            System.out.println(additionIndex);
             getTasksLine(cursor);
-            while (cursor.moveToNext()){
+            while (cursor.moveToNext()) {
                 // int[] values = { cursor.getColumnIndex(DBHelper.ID), cursor.getColumnIndex(DBHelper.TASK), cursor.getColumnIndex(DBHelper.DATE), cursor.getColumnIndex(DBHelper.TIME)};
 
                 Log.d("MainActivity", "id=" + cursor.getInt(idIndex) + ",task=" + cursor.getString(taskIndex) + ",date="
                         + cursor.getString(dateIndex) + ",time=" + cursor.getString(timeIndex));
-
                 getTasksLine(cursor);
                 //tasks.add(date);
                 //tasks.add(time);
 
-               /* ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                        android.R.layout.simple_list_item_1, tasks);
-                setListAdapter(adapter);*/
 
-            } 
-            setListActivity(tasks);
-        }  Log.d("mLog", "0 rows");
+
+            }
+            //setListActivity(tasks);
+        }
+        Log.d("mLog", "0 rows");
         setListActivity(tasks);
+
+
+
         //list = (ListView) findViewById(android.R.id.list);
-       // ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.row_layout, R.id.txt_lan, tasks);
+        // ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.row_layout, R.id.txt_lan, tasks);
         //list.setAdapter(adapter);
         // создаем адаптер
-       ArrayAdapter<String> adapter = new ArrayAdapter(this,
-              android.R.layout.simple_list_item_multiple_choice, tasks);
+        // ArrayAdapter<String> adapter = new ArrayAdapter(this,
+        //android.R.layout.simple_list_item_multiple_choice, tasks);
         // устанавливаем для списка адаптер
-      list.setAdapter(adapter);
+        //list.setAdapter(adapter);
         // добвляем для списка слушатель
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+
+
+
+
+
+       /* list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id)
-            {
-                SparseBooleanArray sp=list.getCheckedItemPositions();
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                SparseBooleanArray sp = list.getCheckedItemPositions();
 
                 list.setItemChecked(position, false);
                 selectedRowIndex = position;
-                System.out.println(selectedRowIndex);
+                System.out.println(selectedRowIndex+"ДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДД");
                 System.out.println(id);
-
+*/
                /* String selectedItems="";
                 for(int i=0;i < tasks.size();i++)
                 {
@@ -123,7 +165,20 @@ public class MainActivity extends ListActivity /*implements View.OnClickListener
                 // установка текста элемента TextView*/
 
             }
-        });
+
+   /* private List<String> getCheckedItems() {
+        List<String> checkedItems = new ArrayList<>();
+
+        for (int i = 0; i < Adapter.mCheckedMap.size(); i++) {
+            if (Adapter.mCheckedMap.get(i)) {
+                (checkedItems).add(tasks.get(i));
+
+            }
+        }
+
+        return checkedItems;
+    }*/
+
 
       /*  list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -133,9 +188,9 @@ public class MainActivity extends ListActivity /*implements View.OnClickListener
                 if (tasks.contains(selectedItem)) {
                     tasks.remove(selectedItem);
                 } else tasks.add(selectedItem);*/
-                // Получаем флажок
-               // CheckedTextView language = (CheckedTextView) view;
-                // Получаем, отмечен ли данный флажок
+        // Получаем флажок
+        // CheckedTextView language = (CheckedTextView) view;
+        // Получаем, отмечен ли данный флажок
                /* boolean checked = language.isChecked();
 
                 TextView selection = (TextView) findViewById(R.id.selection);
@@ -152,97 +207,69 @@ public class MainActivity extends ListActivity /*implements View.OnClickListener
                         break;
                 }
             }*/
-            //}
-       // });
+        //}
+        // });
 
-        cursor.close();
-        System.out.println(selectedRowIndex);
-    }
-    private void getTasksLine(Cursor cursor){
+        //cursor.close();
+        //System.out.println(selectedRowIndex);
+
+
+    private void getTasksLine(Cursor cursor) {
         int id = cursor.getInt(idIndex);
         String task = cursor.getString(taskIndex);
         String date = cursor.getString(dateIndex);
         String time = cursor.getString(timeIndex);
         String statusStr = cursor.getString(statusIndex);
-        Boolean status=false;
-        if (statusStr!=null)
-            status=Boolean.parseBoolean(statusStr);
+        String addition =  cursor.getString(additionIndex);
+        Boolean status = true;
+        //System.out.println(statusStr);
+        if (statusStr != null) {
+            if (statusStr.equals("1")) {
+                status = true;
+
+            } else {
+                status = false;
+            }
+        } else {
+            status = false;
+        }
+
+
+        //System.out.println(status);
         ids.add(id);
 
         statuses.add(status);
-        tasks.add(task + " " + date + " " + time);
+        tasks.add(task + " " + date + " " + time );
+        additionAr.add(addition);
+
+
+
+
+
     }
 
-    /*
-    private class ViewHolder {
-        TextView code;
-        CheckBox name;
-    }
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-
-        ViewHolder holder = null;
-
-
-
-        if (convertView == null) {
-
-            LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-            convertView = vi.inflate(R.layout.row_layout, null);
-
-            holder = new ViewHolder();
-            holder.code = (TextView) convertView.findViewById(R.id.code);
-            holder.name = (CheckedTextView) convertView
-                    .findViewById(R.id.txt_lan);
-
-            convertView.setTag(holder);
-
-            holder.name.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    CheckBox cb = (CheckBox) v;
-                    States _state = (States) cb.getTag();
-
-                    Toast.makeText(
-                            getApplicationContext(),
-                            "Checkbox: " + cb.getText() + " -> "
-                                    + cb.isChecked(), Toast.LENGTH_LONG)
-                            .show();
-
-                    _state.setSelected(cb.isChecked());
-                }
-            });
-
-        } else {
-            holder = (ViewHolder) convertView.getTag();
-        }
-
-        States state = stateList.get(position);
-
-        holder.code.setText(" (" + state.getCode() + ")");
-        holder.name.setText(state.getName());
-        holder.name.setChecked(state.isSelected());
-
-        holder.name.setTag(state);
-
-        return convertView;
-    }
-
-}*/
 
     public void setListActivity(ArrayList array) {
         removeListActivity();
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-               android.R.layout.simple_list_item_1, array);
+        /*ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_multiple_choice);
         list = (ListView) findViewById(android.R.id.list);
+
+        list.setAdapter(adapter);*/
+
+        setListAdapter(new Adapter(this,tasks,additionAr,statuses));
+
+       // list.setOnItemClickListener(myOnItemClickListener);
+
+
         // ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.row_layout, R.id.txt_lan, tasks);
 
-        list.setAdapter(adapter);
 
-        setListAdapter(adapter);
-        for (int i=0;i<statuses.size();i++){
-            list.setItemChecked(i,statuses.get(i));
-        }
+
+        //setListAdapter(adapter);
+
+
+
     }
 
     public void removeListActivity() {
@@ -254,6 +281,7 @@ public class MainActivity extends ListActivity /*implements View.OnClickListener
         Intent intent = new Intent(this, AddActivity.class);
         startActivity(intent);
         setListActivity(tasks);
+
     }
 
     public void editTask(View view) {
@@ -262,36 +290,90 @@ public class MainActivity extends ListActivity /*implements View.OnClickListener
         intent.putExtra("TaskId", idForEdit);
         startActivity(intent);
         //String strToAdd = getIntent().getStringExtra("stringToAdd");
-        //tasks.set(selectedRowIndex, strToAdd);
+        //tasks.set(selectedRowIn-dex, strToAdd);
         setListActivity(tasks);
     }
 
 
-    public  void deleteTask(View v) {
-        int id=ids.get(selectedRowIndex);
-        deletetask=(Button) findViewById(R.id.deleteTask);
-        DBHelper dbHelper= new DBHelper(this);
+    public void deleteTask(View v) {
+        int id = ids.get(selectedRowIndex);
+        deletetask = (Button) findViewById(R.id.deleteTask);
+        DBHelper dbHelper = new DBHelper(this);
         SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase();
-        sqLiteDatabase.delete(DBHelper.TABLE_TASKS2,DBHelper.ID+" = ?",new String[] {String.valueOf(id)});
+        sqLiteDatabase.delete(DBHelper.TABLE_TASKS2, DBHelper.ID + " = ?", new String[]{String.valueOf(id)});
         recreate();
 
 
     }
 
 
-    public void doneTask(View view) {
-        boolean isChecked = list.isItemChecked(selectedRowIndex);
+
+
+    public void doneTask(View view) throws SQLException {
+        dbHelper = new DBHelper(this);
+        SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase();
+        // dbHelper.CreateTasksTable(sqLiteDatabase);
+        Cursor cursor1 = sqLiteDatabase.query(DBHelper.TABLE_TASKS2, null, null, null, null, null, null/*" ID desc"*/);
+
+        cursor1.moveToPosition(ids.get(selectedRowIndex)-1);
+
+        System.out.println(ids.get(selectedRowIndex)+"РРРРРРРРРРРРРРРРРРРРРРРРРР");
+           int statusIndex1 = cursor1.getColumnIndex(DBHelper.STATUS);
+        System.out.println(statusIndex1+"пппппппппппп");
+
+        String st =  cursor1.getString(statusIndex1);
+            System.out.println(st+"пппппппппппп");
+
+        //statusIndex1 = cursor.getColumnIndex(DBHelper.STATUS);
+       // if (selectedRowIndex==-1){}else{
+       // DBHelper dbHelper = new DBHelper(this);
+        //SQLiteDatabase sqLiteDatabase1 = dbHelper.getReadableDatabase();
+        //userCursor =  sqLiteDatabase1.rawQuery("select "+DBHelper.STATUS+" from "+DBHelper.TABLE_TASKS2+" where  "+ DBHelper.ID+"="+ids.get(selectedRowIndex)+"", null);
+        // int st = userCursor.getColumnIndex(DBHelper.STATUS);
+       // System.out.println(st+"прпрпрпрпрпр");
+        //String stR = userCursor.getString(st);
+        //System.out.println(stR);
+        //Statement statement = this.connection.ceateStatement();
+        //ResultSet resultSet = statement.executeQuery("SELECT STATUS from TABLE_TASKS2 WHERE ID = +"+selectedRowIndex+"");
+        if (st==null || st.equals("0")) {
+             isChecked = false;
+
+        }else
+        {
+
+             isChecked = true;
+        }
+
         boolean newValue = !isChecked;
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(DBHelper.STATUS,newValue);
-        DBHelper dbHelper= new DBHelper(this);
-        SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase();
-        sqLiteDatabase.update(DBHelper.TABLE_TASKS2, contentValues, DBHelper.ID + "=" +ids.get(selectedRowIndex ), null);
+        contentValues.put(DBHelper.STATUS, newValue);
+       // DBHelper dbHelper = new DBHelper(this);
 
-        list.setItemChecked(selectedRowIndex, newValue);
+        sqLiteDatabase.update(DBHelper.TABLE_TASKS2, contentValues, DBHelper.ID + "=" + ids.get(selectedRowIndex), null);
+        CheckBox selectedCB =(CheckBox) selectedView.findViewById(R.id.cbBox);
+selectedCB.setChecked(newValue);
+        /*setListActivity(tasks);
+recreate();}*/
+
+        /* boolean isChecked = list.isItemChecked(selectedRowIndex);
+        boolean newValue = !isChecked;
+        System.out.println(isChecked);
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBHelper.STATUS, newValue);
+        DBHelper dbHelper = new DBHelper(this);
+        SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase();
+        sqLiteDatabase.update(DBHelper.TABLE_TASKS2, contentValues, DBHelper.ID + "=" + ids.get(selectedRowIndex), null);
+
+        list.setItemChecked(selectedRowIndex, true);*/
+        //list.setItemChecked(selectedRowIndex, true);*/
 
     }
+
+
+
+
 
 
 }
