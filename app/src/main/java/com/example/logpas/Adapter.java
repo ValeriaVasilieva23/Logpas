@@ -71,57 +71,13 @@ public class Adapter extends BaseAdapter {
            // for (int i = 0; i < statuses.size(); i++) {
                 cbBox.setChecked(statuses.get(position));
 
-         //   }
-            // пишем позицию
-            //cbBuy.setTag(position);
-            // заполняем данными из товаров: в корзине или нет
-
-
-           /* CompoundButton.OnCheckedChangeListener myCheckChangeList = new CompoundButton.OnCheckedChangeListener() {
-                public void onCheckedChanged(CompoundButton buttonView,
-                                             boolean isChecked) {
-                    cbBuy.setChecked(true);
-                }
-            };
-            cbBuy.setOnCheckedChangeListener(myCheckChangeList);*/
         }
-
-
-
-
-
         TextView et1 = (TextView) convertView.findViewById(R.id.task);
         TextView et2 = (TextView) convertView.findViewById(R.id.addition);
         et1.setText(tasks.get(position));
         et2.setText(addition.get(position));
         View view = convertView;
-        //final CheckBox cbBuy = (CheckBox) view.findViewById(R.id.cbBox);
-        // присваиваем чекбоксу обработчик
-        /*for (int i = 0; i < statuses.size(); i++) {
 
-           // cbBuy.setItemChecked(i, statuses.get(i));
-            if (statuses.get(i).equals(1))*/
-            //cbBuy.setChecked(true);
-        //}
-        //cbBuy.setChecked(true);
-        // пишем позицию
-       /* cbBuy.setTag(position);
-        // заполняем данными из товаров: в корзине или нет
-        cbBuy.setChecked(true);
-        RadioGroup.OnCheckedChangeListener myCheckChangeList = new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                cbBuy.setChecked(true);
-            }
-
-
-
-        return convertView;
-
-        };
-        // do some work
-
-    }*/
         return convertView;
 }}
 

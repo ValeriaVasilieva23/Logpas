@@ -31,16 +31,15 @@ public class EditActivity extends AddActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
-        Bundle arguments = getIntent().getExtras();
-        Intent intent=getIntent();
-        taskId = arguments.getInt("TaskId");
         System.out.println("taskId=" + taskId);
         EditText editText3 = (EditText) findViewById(R.id.edit_message1);
         EditText editText = (EditText) findViewById(R.id.edit_message);
         EditText editText1=(EditText) findViewById(R.id.in_date);
         EditText editText2=(EditText) findViewById(R.id.in_time);
         DBHelper dbhelper = new DBHelper(this);
+        Bundle arguments = getIntent().getExtras();
+        Intent intent=getIntent();
+        taskId = arguments.getInt("TaskId");
         SQLiteDatabase sqLiteDatabase = dbhelper.getWritableDatabase();
         Cursor cursor = sqLiteDatabase.query(DBHelper.TABLE_TASKS2, null, "Id = " + taskId, null, null, null, null);
         cursor.moveToFirst();
@@ -58,7 +57,7 @@ public class EditActivity extends AddActivity {
         editText.setText("" + task + "", TextView.BufferType.EDITABLE);
         editText1.setText("" + date + "", TextView.BufferType.EDITABLE);
         editText2.setText("" + time + "", TextView.BufferType.EDITABLE);
-        editText3.setText("" + addition + "");
+        editText3.setText("" + addition + "", TextView.BufferType.EDITABLE);
 
     }
 
@@ -121,10 +120,13 @@ public class EditActivity extends AddActivity {
 
     }
     public void saveTask(View view) {
+        String task1 = edit_message1.getText().toString();
+
         String task = edit_message.getText().toString();
         String date = txtDate.getText().toString();
         String time = txtTime.getText().toString();
         ContentValues contentValues = new ContentValues();
+        contentValues.put(DBHelper.ADDITION, task1);
         contentValues.put(DBHelper.DATE, date);
         contentValues.put(DBHelper.TASK, task);
         contentValues.put(DBHelper.TIME, time);
@@ -137,7 +139,7 @@ public class EditActivity extends AddActivity {
         System.out.println(time);
 
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("stringToAdd", task+" "+date+" " + time);
+       // intent.putExtra("stringToAdd", task+" "+date+" " + time+""+task1);
         startActivity(intent);
         System.out.println("привет");
         finish();

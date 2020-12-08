@@ -110,20 +110,6 @@ edit_message.addTextChangedListener(new TextWatcher() {
         DBHelper dbHelper= new DBHelper(this);
         SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase();
     sqLiteDatabase.insert(DBHelper.TABLE_TASKS2, null, contentValues);
-
-        /*Cursor cursor = sqLiteDatabase.query(DBHelper.TABLE_TASKS2, null,null, null,null, null, null);
-        System.out.println("ЩЩЩЩЩЩЩЩЩЩЖЩЛДОТДРИЛРПМПОСААПСОРИТДЛЬЖДБЖЬДРИ" );
-        /*cursor.moveToLast();
-            int idIndex = cursor.getColumnIndex(DBHelper.ID);
-            int taskIndex = cursor.getColumnIndex(DBHelper.TASK);
-            int dateIndex = cursor.getColumnIndex(DBHelper.DATE);
-            int timeIndex = cursor.getColumnIndex(DBHelper.TIME);
-            int statusIndex = cursor.getColumnIndex(DBHelper.STATUS);
-            System.out.println("ЩЩЩЩЩЩЩЩЩЩЖЩЛДОТДРИЛРПМПОСААПСОРИТДЛЬЖДБЖЬДРИ" + idIndex);
-            System.out.println(taskIndex);
-            System.out.println(dateIndex);
-            System.out.println(timeIndex);
-*/
         Intent intent = new Intent(this, MainActivity.class);
         //intent.putExtra("stringToAdd", task+" "+date+" " + time);
         startActivity(intent);
