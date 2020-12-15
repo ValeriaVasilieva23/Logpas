@@ -52,7 +52,7 @@ public class MainActivity extends ListActivity /*implements View.OnClickListener
     int statusIndex;
     int additionIndex;
     boolean isChecked=false;
-
+    int id;
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
@@ -112,7 +112,7 @@ selectedView=v;
 
 
     private void getTasksLine(Cursor cursor) {
-        int id = cursor.getInt(idIndex);
+         id = cursor.getInt(idIndex);
         String task = cursor.getString(taskIndex);
         String date = cursor.getString(dateIndex);
         String time = cursor.getString(timeIndex);
@@ -133,7 +133,8 @@ selectedView=v;
 
 
         ids.add(id);
-
+        System.out.println(ids+"НННННННННННННННННННННННННННННННННННННГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГ");
+        System.out.println();
         statuses.add(status);
         tasks.add(task + " " + date + " " + time );
         additionAr.add(addition);
@@ -192,8 +193,40 @@ selectedView=v;
         DBHelper dbHelper = new DBHelper(this);
         SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase();
         sqLiteDatabase.delete(DBHelper.TABLE_TASKS2, DBHelper.ID + " = ?", new String[]{String.valueOf(id)});
-        recreate();
 
+        // DBHelper dbHelper = new DBHelper(this);
+
+        //recreate();
+
+        tasks = new ArrayList<String>();
+        Cursor cursor = sqLiteDatabase.query(DBHelper.TABLE_TASKS2, null, null, null, null, null, " ID desc");
+        System.out.println("cursor on TABLE_TASKS2 started");
+        if (cursor.moveToFirst()) {
+
+            idIndex = cursor.getColumnIndex(DBHelper.ID);
+            taskIndex = cursor.getColumnIndex(DBHelper.TASK);
+            dateIndex = cursor.getColumnIndex(DBHelper.DATE);
+            timeIndex = cursor.getColumnIndex(DBHelper.TIME);
+            statusIndex = cursor.getColumnIndex(DBHelper.STATUS);
+            additionIndex=cursor.getColumnIndex(DBHelper.ADDITION);
+
+            System.out.println(statusIndex);
+            System.out.println(idIndex);
+            System.out.println(taskIndex);
+            System.out.println(dateIndex);
+            System.out.println(timeIndex);
+            System.out.println(additionIndex);
+            getTasksLine(cursor);
+            while (cursor.moveToNext()) {
+                // int[] values = { cursor.getColumnIndex(DBHelper.ID), cursor.getColumnIndex(DBHelper.TASK), cursor.getColumnIndex(DBHelper.DATE), cursor.getColumnIndex(DBHelper.TIME)};
+
+                Log.d("MainActivity", "id=" + cursor.getInt(idIndex) + ",task=" + cursor.getString(taskIndex) + ",date="
+                        + cursor.getString(dateIndex) + ",time=" + cursor.getString(timeIndex));
+                getTasksLine(cursor);
+            }
+        }
+        Log.d("mLog", "0 rows");
+        setListActivity(tasks);
 
     }
 
@@ -203,19 +236,21 @@ selectedView=v;
     public void doneTask(View view) throws SQLException {
         dbHelper = new DBHelper(this);
         SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase();
-        Cursor cursor1 = sqLiteDatabase.query(DBHelper.TABLE_TASKS2, null, null, null, null, null, null/*" ID desc"*/);
 
-        cursor1.moveToPosition(ids.get(selectedRowIndex)-1);
+        int index = ids.get(selectedRowIndex);
+
+        Cursor selectRowCursor = sqLiteDatabase.query(DBHelper.TABLE_TASKS2, null, DBHelper.ID + "=" + ids.get(selectedRowIndex), null, null, null, " ID desc");
+        selectRowCursor.moveToFirst();
 
         System.out.println(ids.get(selectedRowIndex)+"-----");
-           int statusIndex1 = cursor1.getColumnIndex(DBHelper.STATUS);
-        System.out.println(statusIndex1+"_____");
+           int statusIndex1 = selectRowCursor.getColumnIndex(DBHelper.STATUS);
 
-        String st =  cursor1.getString(statusIndex1);
+
+        String st =  selectRowCursor.getString(statusIndex1);
         System.out.println(st+"+++++");
 
 
-        if (st==null || st.equals("0")) {
+        if (st.equals("0")) {
              isChecked = false;
 
         }else

@@ -33,6 +33,7 @@ public class AddActivity extends AppCompatActivity implements
     Button btnDatePicker, btnTimePicker,btncancel;
     EditText txtDate, txtTime;
     private int mYear, mMonth, mDay, mHour, mMinute;
+    int id=0;
     public String dayofMonth1;
     public String monthOfYear1;
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -102,14 +103,16 @@ edit_message.addTextChangedListener(new TextWatcher() {
         String addition = edit_message1.getText().toString();
 
         ContentValues contentValues = new ContentValues();
+
         contentValues.put(DBHelper.DATE, date);
         contentValues.put(DBHelper.TASK, task);
         contentValues.put(DBHelper.TIME, time);
+        contentValues.put(DBHelper.STATUS, 0);
         contentValues.put(DBHelper.ADDITION,addition);
 
         DBHelper dbHelper= new DBHelper(this);
         SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase();
-    sqLiteDatabase.insert(DBHelper.TABLE_TASKS2, null, contentValues);
+        sqLiteDatabase.insert(DBHelper.TABLE_TASKS2, null, contentValues);
         Intent intent = new Intent(this, MainActivity.class);
         //intent.putExtra("stringToAdd", task+" "+date+" " + time);
         startActivity(intent);

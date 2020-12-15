@@ -12,7 +12,7 @@ import androidx.annotation.RequiresApi;
 
 public class DBHelper extends SQLiteOpenHelper /*implements Parcelable*/ {
     public static int DATABASE_VERSION=1;
-    public static String DATABASE_NAME="logps45";
+    public static String DATABASE_NAME="lp3";
     public static final String TABLE_TASKS2="tasks1000";
 
     public static final String ID="id";
@@ -31,7 +31,7 @@ public class DBHelper extends SQLiteOpenHelper /*implements Parcelable*/ {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
 
-        sqLiteDatabase.execSQL("create table "+TABLE_TASKS2+"(" +ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"+TASK+","+DATE+","+STATUS+","+TIME+","+ADDITION+")");
+        sqLiteDatabase.execSQL("create table "+TABLE_TASKS2+"(" +ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"+TASK+","+DATE+","+STATUS+" INTEGER NOT NULL, "+TIME+","+ADDITION+")");
 
     }
 
