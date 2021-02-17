@@ -12,59 +12,36 @@ import android.graphics.Typeface;
 import android.icu.util.Calendar;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.File;
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
-public class MainActivity extends ListActivity /*implements View.OnClickListener*/ {
-    ArrayList<String> tasks = new ArrayList<String>();
-    private Connection connection;
-    ArrayList<String> additionAr = new ArrayList<String>();
-    ArrayList<Integer> ids = new ArrayList<Integer>();
-    ArrayList<Integer> ids1 = new ArrayList<Integer>();
+public class MainActivity extends ListActivity {
+    ArrayList<TaskData> tasksList = new ArrayList<TaskData>();
 
-    ArrayList<Boolean> statuses = new ArrayList<Boolean>();
-    View selectedView;
-    ImageButton btnAdd, btnEdit, btnDone, btncancel, deletetask;
-    ListView list;
-    DBHelper dbHelper;
-    CheckBox checkBox;
-    ArrayList<String> time1= new ArrayList<String>();
+    View selectedLineView;
+
     ArrayAdapter<String> adapter;
     public int selectedRowIndex;
     int idIndex;
-    int taskIndex;
+    int taskNameIndex;
     int dateIndex;
     int timeIndex;
     int statusIndex;
@@ -86,7 +63,7 @@ public class MainActivity extends ListActivity /*implements View.OnClickListener
     public boolean onContextItemSelected(MenuItem item)  {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         selectedRowIndex = info.position;
-        selectedView = info.targetView;
+        selectedLineView = info.targetView;
         switch (item.getItemId()) {
             case R.id.add:
                 addTask(null); // метод, выполняющий действие при редактировании пункта меню
@@ -126,7 +103,7 @@ public class MainActivity extends ListActivity /*implements View.OnClickListener
         SimpleDateFormat sdf = new SimpleDateFormat(" E dd.MM", Locale.getDefault());
         String date = sdf.format(Calendar.getInstance().getTime());
         textView.setText("Задания на день ("+date+" )");
-        btncancel = (ImageButton) findViewById(R.id.cancel);
+        ImageButton btnCancel = (ImageButton) findViewById(R.id.cancel);
 
         String tempString="Задания на день ("+date+" )";
 
@@ -137,10 +114,10 @@ public class MainActivity extends ListActivity /*implements View.OnClickListener
         AdapterView.OnItemClickListener itemListener = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                if (selectedView != null) {
+                if (selectedLineView != null) {
 
-                    if (selectedView == v) {
-                        TextView et = (TextView) selectedView.findViewById(R.id.addition);
+                    if (selectedLineView == v) {
+                        TextView et = (TextView) selectedLineView.findViewById(R.id.addition);
                         int currentVisibility = et.getVisibility();
                         int reverseVisibility = 0;
 
@@ -151,7 +128,7 @@ public class MainActivity extends ListActivity /*implements View.OnClickListener
                         }
                         et.setVisibility(reverseVisibility);
                     } else {
-                        TextView et = (TextView) selectedView.findViewById(R.id.addition);
+                        TextView et = (TextView) selectedLineView.findViewById(R.id.addition);
                         et.setVisibility(v.GONE);
 
                         TextView newTV = (TextView) v.findViewById(R.id.addition);
@@ -162,7 +139,7 @@ public class MainActivity extends ListActivity /*implements View.OnClickListener
                     TextView et = (TextView) v.findViewById(R.id.addition);
                     et.setVisibility(v.VISIBLE);
                 }
-                selectedView = v;//подсвеченная строка
+                selectedLineView = v;//подсвеченная строка
 
                 selectedRowIndex = position;
                 System.out.println("onItemClick_postition:" + position);
@@ -179,7 +156,7 @@ public class MainActivity extends ListActivity /*implements View.OnClickListener
 
 
 
-        dbHelper = new DBHelper(this);
+        DBHelper dbHelper = new DBHelper(this);
         File dbFile = getDatabasePath(DBHelper.DATABASE_NAME);
         System.out.println(dbFile);
         SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase();
@@ -193,7 +170,7 @@ public class MainActivity extends ListActivity /*implements View.OnClickListener
         if (cursor.moveToFirst()) {
 
             idIndex = cursor.getColumnIndex(DBHelper.ID);
-            taskIndex = cursor.getColumnIndex(DBHelper.TASK);
+            taskNameIndex = cursor.getColumnIndex(DBHelper.TASK);
             dateIndex = cursor.getColumnIndex(DBHelper.DATE);
             timeIndex = cursor.getColumnIndex(DBHelper.TIME);
             statusIndex = cursor.getColumnIndex(DBHelper.STATUS);
@@ -201,116 +178,106 @@ public class MainActivity extends ListActivity /*implements View.OnClickListener
 
             System.out.println(statusIndex);
             System.out.println(idIndex);
-            System.out.println(taskIndex);
+            System.out.println(taskNameIndex);
             System.out.println(dateIndex);
             System.out.println(timeIndex);
             System.out.println(additionIndex);
             getTasksLine(cursor);
             while (cursor.moveToNext()) {
-                // int[] values = { cursor.getColumnIndex(DBHelper.ID), cursor.getColumnIndex(DBHelper.TASK), cursor.getColumnIndex(DBHelper.DATE), cursor.getColumnIndex(DBHelper.TIME)};
-
-                Log.d("MainActivity", "id=" + cursor.getInt(idIndex) + ",task=" + cursor.getString(taskIndex) + ",date="
+                Log.d("MainActivity", "id=" + cursor.getInt(idIndex) + ",task=" + cursor.getString(taskNameIndex) + ",date="
                         + cursor.getString(dateIndex) + ",time=" + cursor.getString(timeIndex));
                 getTasksLine(cursor);
             }
         }
         Log.d("mLog", "0 rows");
-        setListActivity(tasks);
+        setListActivity();
 
             }
 
 
 
     private void getTasksLine(Cursor cursor) {
-         id = cursor.getInt(idIndex);
-        String task = cursor.getString(taskIndex);
-        String date = cursor.getString(dateIndex);
-        String time = cursor.getString(timeIndex);
+
+        TaskData task = new TaskData();
+
+        task.Id = cursor.getInt(idIndex);
+        task.Name = cursor.getString(taskNameIndex);
+        task.Date = cursor.getString(dateIndex);
+        task.Time = cursor.getString(timeIndex);
+        task.Description =  cursor.getString(additionIndex);
+
         String statusStr = cursor.getString(statusIndex);
-        String addition =  cursor.getString(additionIndex);
+
         Boolean status = true;
-        //System.out.println(statusStr);
         if (statusStr != null) {
             if (statusStr.equals("1")) {
                 status = true;
-
             } else {
                 status = false;
             }
         } else {
             status = false;
         }
-        ids.add(id);
-        System.out.println(ids+"НННННННННННННННННННННННННННННННННННННГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГ");
-        statuses.add(status);
-        tasks.add(task  );
-        System.out.println(tasks);
-        time1.add(time);
-        additionAr.add(addition);
+        task.Status = status;
+
+        tasksList.add(task);
+
+        //tasksIds.add(id);
+        //System.out.println(tasksIds +"НННННННННННННННННННННННННННННННННННННГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГ");
+
+        //tasksNames.add(task  );
+        //System.out.println(tasksNames);
+        //tasksTimes.add(time);
+        //tasksDescriptions.add(addition);
     }
 
 
-    public void setListActivity(ArrayList array) {
+    public void setListActivity() {
         removeListActivity();
 
-        setListAdapter(new Adapter(this,tasks,additionAr,time1,statuses,selectedRowIndex));
-
-       // list.setOnItemClickListener(myOnItemClickListener);
-
-
-        // ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.row_layout, R.id.txt_lan, tasks);
-
-
-
-        //setListAdapter(adapter);
-
-
-
+        //setListAdapter(new Adapter(this, tasksNames, tasksDescriptions, tasksTimes, tasksStatuses,selectedRowIndex));
+        setListAdapter(new Adapter(this, tasksList));
     }
 
     public void removeListActivity() {
-        tasks.remove(tasks);
+        tasksList.remove(tasksList);
     }
 
 
     public void addTask(View view) {
         Intent intent = new Intent(this, AddActivity.class);
         startActivity(intent);
-        setListActivity(tasks);
+        setListActivity();
 
     }
 
     public void editTask(View view) {
         Intent intent = new Intent(this, EditActivity.class);
-        int idForEdit = ids.get(selectedRowIndex);
+        int idForEdit = tasksList.get(selectedRowIndex).Id;
         intent.putExtra("TaskId", idForEdit);
         startActivity(intent);
         //String strToAdd = getIntent().getStringExtra("stringToAdd");
         //tasks.set(selectedRowIn-dex, strToAdd);
-        setListActivity(tasks);
+        setListActivity();
     }
 
 
     public void deleteTask(View v) {
-        int id = ids.get(selectedRowIndex);
+        int id = tasksList.get(selectedRowIndex).Id;
         System.out.println(id+"ID");
-        deletetask = (ImageButton) findViewById(R.id.deleteTask);
+        ImageButton btnDelete = (ImageButton) findViewById(R.id.deleteTask);
         DBHelper dbHelper = new DBHelper(this);
         SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase();
         sqLiteDatabase.delete(DBHelper.TABLE_TASKS2, DBHelper.ID + " = ?", new String[]{String.valueOf(id)});
 
-        // DBHelper dbHelper = newпуе DBHelper(this);
-
-        //recreate();
-
-        tasks = new ArrayList<String>();
+        //tasksNames = new ArrayList<String>();
         Cursor cursor = sqLiteDatabase.query(DBHelper.TABLE_TASKS2, null, "date<date() and status =0 or date=date()", null, null, null, " ID desc");
         System.out.println("cursor on TABLE_TASKS2 started");
-        ids.clear();
+        tasksList.clear();
         if (cursor.moveToFirst()) {
 
             idIndex = cursor.getColumnIndex(DBHelper.ID);
-            taskIndex = cursor.getColumnIndex(DBHelper.TASK);
+            taskNameIndex = cursor.getColumnIndex(DBHelper.TASK);
             dateIndex = cursor.getColumnIndex(DBHelper.DATE);
             timeIndex = cursor.getColumnIndex(DBHelper.TIME);
             statusIndex = cursor.getColumnIndex(DBHelper.STATUS);
@@ -318,30 +285,28 @@ public class MainActivity extends ListActivity /*implements View.OnClickListener
 
             System.out.println(statusIndex);
             System.out.println(idIndex);
-            System.out.println(taskIndex);
+            System.out.println(taskNameIndex);
             System.out.println(dateIndex);
             System.out.println(timeIndex);
             System.out.println(additionIndex);
             getTasksLine(cursor);
             while (cursor.moveToNext()) {
-                // int[] values = { cursor.getColumnIndex(DBHelper.ID), cursor.getColumnIndex(DBHelper.TASK), cursor.getColumnIndex(DBHelper.DATE), cursor.getColumnIndex(DBHelper.TIME)};
-
-                Log.d("MainActivity", "id=" + cursor.getInt(idIndex) + ",task=" + cursor.getString(taskIndex) + ",date="
+                Log.d("MainActivity", "id=" + cursor.getInt(idIndex) + ",task=" + cursor.getString(taskNameIndex) + ",date="
                         + cursor.getString(dateIndex) + ",time=" + cursor.getString(timeIndex));
                 getTasksLine(cursor);
             }
         }
         Log.d("mLog", "0 rows");
-        setListActivity(tasks);
+        setListActivity();
 
     }
 public void markTask (){
-    dbHelper = new DBHelper(this);
+    DBHelper dbHelper = new DBHelper(this);
     SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase();
-    int index = ids.get(selectedRowIndex);
-    Cursor selectRowCursor = sqLiteDatabase.query(DBHelper.TABLE_TASKS2, null, DBHelper.ID + "=" + ids.get(selectedRowIndex), null, null, null, " ID desc");
+    int index = tasksList.get(selectedRowIndex).Id;
+    Cursor selectRowCursor = sqLiteDatabase.query(DBHelper.TABLE_TASKS2, null, DBHelper.ID + "=" + tasksList.get(selectedRowIndex).Id, null, null, null, " ID desc");
     selectRowCursor.moveToFirst();
-    System.out.println(ids.get(selectedRowIndex)+"-----");
+    //System.out.println(tasksIds.get(selectedRowIndex)+"-----");
     int statusIndex1 = selectRowCursor.getColumnIndex(DBHelper.STATUS);
     String st =  selectRowCursor.getString(statusIndex1);
     System.out.println(st+"+++++");
@@ -354,8 +319,8 @@ public void markTask (){
     boolean newValue = !isChecked;
     ContentValues contentValues = new ContentValues();
     contentValues.put(DBHelper.STATUS, newValue);
-    sqLiteDatabase.update(DBHelper.TABLE_TASKS2, contentValues, DBHelper.ID + "=" + ids.get(selectedRowIndex), null);
-    CheckBox selectedCB =(CheckBox) selectedView.findViewById(R.id.cbBox);
+    sqLiteDatabase.update(DBHelper.TABLE_TASKS2, contentValues, DBHelper.ID + "=" + tasksList.get(selectedRowIndex).Id, null);
+    CheckBox selectedCB =(CheckBox) selectedLineView.findViewById(R.id.cbBox);
     selectedCB.setChecked(newValue);
 }
 
@@ -363,10 +328,6 @@ public void markTask (){
 
     public void doneTask(View view) throws SQLException {
     markTask();
-
-        /*setListActivity(tasks);
-recreate();}*/
-
     }
 
 

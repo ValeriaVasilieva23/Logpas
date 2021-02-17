@@ -22,38 +22,24 @@ import java.util.HashMap;
 public class Adapter extends BaseAdapter {
 
     private Context context;
+    public ArrayList<TaskData> tasksList;
     public ArrayList<Integer> checks;
-    private ArrayList<String> tasks;
-    private ArrayList<String> addition;
-    private ArrayList<Boolean> statuses;
-    private ArrayList<String> time;
-    private int selectri;
     public static HashMap<Integer, Boolean> mCheckedMap = new HashMap<>();
 
-
-    public Adapter(Context context, ArrayList<String> task, ArrayList<String> addition, ArrayList<String> time, ArrayList<Boolean> statuses, int selectedRI) {
+    public Adapter(Context context, ArrayList<TaskData> tasks) {
         this.context = context;
-        this.tasks = task;
-        this.addition = addition;
-        this.statuses = statuses;
-        this.time = time;
-        this.time = time;
-        this.selectri = selectedRI;
-        /*for (int i = 0; i < tasks.size(); i++) {
-            mCheckedMap.put(i, statuses.get(i));
-        }*/
-
+        tasksList = tasks;
     }
 
     @Override
     public int getCount() {
-        return tasks.size();
+        return tasksList.size();
     }
 
     @Override
     public Object getItem(int position) {
 
-        return tasks.get(position);
+        return tasksList.get(position).Name;
     }
 
     @Override
@@ -67,6 +53,8 @@ public class Adapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
+        TaskData task = tasksList.get(position);
+
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -74,18 +62,17 @@ public class Adapter extends BaseAdapter {
             CheckBox cbBox = (CheckBox) convertView.findViewById(R.id.cbBox);
 
             // присваиваем чекбоксу обработчик
-            // for (int i = 0; i < statuses.size(); i++) {
-            cbBox.setChecked(statuses.get(position));
+            cbBox.setChecked(task.Status);
 
         }
         TextView et1 = (TextView) convertView.findViewById(R.id.task);
         TextView et2 = (TextView) convertView.findViewById(R.id.addition);
 
-        et1.setText(tasks.get(position));
-        et2.setText(addition.get(position));
+        et1.setText(task.Name);
+        et2.setText(task.Description);
         et2.setVisibility(convertView.GONE);
         TextView et3 = (TextView) convertView.findViewById(R.id.time);
-        et3.setText(time.get(position));
+        et3.setText(task.Time);
         View view = convertView;
 
         return convertView;
