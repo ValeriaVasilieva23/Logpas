@@ -28,6 +28,9 @@ import java.util.SimpleTimeZone;
 
 public class AddActivity extends AppCompatActivity implements
         View.OnClickListener {
+    Boolean bo1 = false;
+    Boolean bo2 = false;
+    String task2, task3;
     Button saveTask;
     EditText edit_message,edit_message1;
     Button btnDatePicker, btnTimePicker,btncancel;
@@ -61,6 +64,36 @@ public class AddActivity extends AppCompatActivity implements
         while (task1=="");*/
 
             saveTask.setEnabled(false);
+        txtDate.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+            @Override
+            public void afterTextChanged(Editable editable) {
+                 task3=txtDate.getText().toString();
+                if (( task3.equals(""))){
+                    bo1=false;//saveTask.setEnabled(false);
+
+                }
+                else{
+                   // saveTask.setEnabled(true);
+                    bo1=true;
+                }
+                if(((bo1.equals(true) && bo2.equals(true)))){
+                    saveTask.setEnabled(true);
+
+                }
+                else {
+                    saveTask.setEnabled(false);
+                }
+            }
+
+                                       });
 
 edit_message.addTextChangedListener(new TextWatcher() {
     @Override
@@ -75,13 +108,22 @@ edit_message.addTextChangedListener(new TextWatcher() {
 
     @Override
     public void afterTextChanged(Editable editable) {
-       String  task2=edit_message.getText().toString();
-        if (task2.equals("")){
-            saveTask.setEnabled(false);
+        task2=edit_message.getText().toString();
+       if ((task2.equals("") )){
+            bo2=false;
+            //saveTask.setEnabled(false);
 
         }
         else{
+            //saveTask.setEnabled(true);
+            bo2=true;
+        }
+        if(((bo1.equals(true) && bo2.equals(true)))){
             saveTask.setEnabled(true);
+
+        }
+        else {
+            saveTask.setEnabled(false);
         }
     }
 });
@@ -146,7 +188,7 @@ public void onChanged(View v) {}
                             @Override
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
-                                SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy");
+                                SimpleDateFormat dateFormatter = new SimpleDateFormat("YYYY-MM-dd");
                                 int year1=year-1900;
                                 Date d = new Date();
                                d.setMonth(monthOfYear);

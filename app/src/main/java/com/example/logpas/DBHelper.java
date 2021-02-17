@@ -12,7 +12,7 @@ import androidx.annotation.RequiresApi;
 
 public class DBHelper extends SQLiteOpenHelper /*implements Parcelable*/ {
     public static int DATABASE_VERSION=1;
-    public static String DATABASE_NAME="lp3";
+    public static String DATABASE_NAME="lera";
     public static final String TABLE_TASKS2="tasks1000";
 
     public static final String ID="id";
